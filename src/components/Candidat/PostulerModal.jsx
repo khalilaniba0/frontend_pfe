@@ -12,12 +12,13 @@ import {
 import { useCandidateAuth } from "context/ContexteAuthCandidat";
 import { postuler } from "service/restApiCandidature";
 import ModalBackdrop from "components/commun/FondModal";
+import { API_URL } from "config/api";
 
 const CV_REQUIRED_MESSAGE = "pour postuler a un offre il faut deposer un cv";
 
 export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess }) {
   const { candidat } = useCandidateAuth();
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const apiUrl = API_URL;
   const hasProfileCv = Boolean(candidat?.cv_url);
 
   const [form, setForm] = useState({

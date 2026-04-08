@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 
-import useNotifications from "hooks/useNotificationsSysteme";
-
 const TABS = {
   ALL: "all",
   UNREAD: "unread",
@@ -131,14 +129,18 @@ function formatRelativeDate(value) {
   });
 }
 
-export default function NotificationPanel({ isOpen, onClose }) {
+export default function NotificationPanel({
+  isOpen,
+  onClose,
+  notifications,
+  isLoading,
+  error,
+  markAsRead,
+  deleteOne,
+}) {
   const [activeTab, setActiveTab] = useState(TABS.ALL);
   const [selectedNotif, setSelectedNotif] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
-  const { notifications, isLoading, error, markAsRead, deleteOne } = useNotifications({
-    enabled: isOpen,
-    polling: isOpen,
-  });
 
   useEffect(
     function () {
@@ -480,9 +482,19 @@ export default function NotificationPanel({ isOpen, onClose }) {
 NotificationPanel.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
+  notifications: PropTypes.arrayOf(PropTypes.object),
+  isLoading: PropTypes.bool,
+  error: PropTypes.string,
+  markAsRead: PropTypes.func,
+  deleteOne: PropTypes.func,
 };
 
 NotificationPanel.defaultProps = {
   isOpen: false,
   onClose: function () {},
+  notifications: [],
+  isLoading: false,
+  error: "",
+  markAsRead: async function () {},
+  deleteOne: async function () {},
 };

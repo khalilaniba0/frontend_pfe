@@ -4,6 +4,30 @@ import ModalBackdrop from "../commun/FondModal";
 
 var ENTRETIEN_TYPES = ["Présentiel", "Visio", "Téléphone"];
 
+function getNowDateTimeLocalValue() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = String(now.getMonth() + 1).padStart(2, "0");
+  var day = String(now.getDate()).padStart(2, "0");
+  var hour = String(now.getHours()).padStart(2, "0");
+  var minute = String(now.getMinutes()).padStart(2, "0");
+
+  return year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+}
+
+function parseDateTimeLocalValue(value) {
+  if (!value || typeof value !== "string") {
+    return null;
+  }
+
+  var parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return parsed;
+}
+
 export default function EntretienModal({ candidate, onConfirm, onCancel }) {
   var dateState = React.useState("");
   var dateEntretien = dateState[0];
@@ -22,10 +46,23 @@ export default function EntretienModal({ candidate, onConfirm, onCancel }) {
       setFormError("Veuillez sélectionner la date et l'heure de l'entretien.");
       return;
     }
+
+    var parsedDate = parseDateTimeLocalValue(dateEntretien);
+    if (!parsedDate) {
+      setFormError("Date et heure invalides.");
+      return;
+    }
+
+    if (parsedDate.getTime() < Date.now()) {
+      setFormError("Impossible de planifier un entretien dans le passé.");
+      return;
+    }
+
     if (!typeEntretien) {
       setFormError("Veuillez sélectionner le type d'entretien.");
       return;
     }
+
     setFormError("");
     onConfirm(dateEntretien, typeEntretien);
   }
@@ -63,7 +100,9 @@ export default function EntretienModal({ candidate, onConfirm, onCancel }) {
               value={dateEntretien}
               onChange={function (e) {
                 setDateEntretien(e.target.value);
+                setFormError("");
               }}
+              min={getNowDateTimeLocalValue()}
               className="w-full rounded-xl border border-border bg-white px-3 py-2.5 font-body text-sm text-text-primary transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -80,6 +119,7 @@ export default function EntretienModal({ candidate, onConfirm, onCancel }) {
               value={typeEntretien}
               onChange={function (e) {
                 setTypeEntretien(e.target.value);
+                setFormError("");
               }}
               className="w-full appearance-none rounded-xl border border-border bg-white px-3 py-2.5 font-body text-sm text-text-primary transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             >

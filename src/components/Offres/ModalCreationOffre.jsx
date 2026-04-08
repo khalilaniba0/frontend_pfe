@@ -12,15 +12,28 @@ const WORK_MODES = [
 ];
 
 const EXPERIENCE_LEVELS = [
-  { label: "Junior", value: "junior" },
-  { label: "Senior", value: "senior" },
+  { label: "Débutant (0 an)", value: "0" },
+  { label: "Junior (1-2 ans)", value: "1" },
+  { label: "Confirmé (3-4 ans)", value: "3" },
+  { label: "Senior (5-7 ans)", value: "5" },
+  { label: "Expert (8+ ans)", value: "8" },
+];
+
+const EDUCATION_LEVELS = [
+  "Bac",
+  "Bac+2",
+  "Bac+3",
+  "Bac+5",
+  "Doctorat",
+  "Non spécifié",
 ];
 
 const EMPTY_FORM = {
   poste: "",
   typeContrat: "",
   modeContrat: "hybride",
-  niveauExperience: "junior",
+  niveauExperience: "",
+  niveauEducation: "Non spécifié",
   langues: [],
   description: "",
   exigences: [],
@@ -180,14 +193,21 @@ export default function CreateJobModal({ onClose, onSuccess }) {
         extractId(storedUser?.company) ||
         extractId(storedUser?.companyId);
       const responsableId = extractId(storedUser?._id || storedUser?.id);
+      const modeTravail =
+        WORK_MODES.find(function (mode) {
+          return mode.value === form.modeContrat;
+        })?.label || form.modeContrat;
 
       const payload = {
         poste: form.poste.trim(),
+        titre: form.poste.trim(),
         description: form.description.trim(),
         exigences: form.exigences,
         typeContrat: form.typeContrat,
         modeContrat: form.modeContrat,
+        modeTravail,
         niveauExperience: form.niveauExperience,
+        niveauEducation: form.niveauEducation,
         langues: form.langues,
         langue: form.langues.join(", "),
       };
@@ -340,8 +360,8 @@ export default function CreateJobModal({ onClose, onSuccess }) {
             </div>
           </div>
 
-          {/* Row 4: Niveau + Langue */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Row 4: Experience */}
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="mb-1 block font-display text-sm font-medium text-text-primary">
                 Niveau d'expérience
@@ -352,10 +372,34 @@ export default function CreateJobModal({ onClose, onSuccess }) {
                 onChange={handleChange}
                 className={inputClass("niveauExperience")}
               >
+                <option value="">Sélectionner...</option>
                 {EXPERIENCE_LEVELS.map(function (level) {
                   return (
                     <option key={level.value} value={level.value}>
                       {level.label}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+
+          {/* Row 5: Education + Langues */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block font-display text-sm font-medium text-text-primary">
+                Niveau d'éducation
+              </label>
+              <select
+                name="niveauEducation"
+                value={form.niveauEducation}
+                onChange={handleChange}
+                className={inputClass("niveauEducation")}
+              >
+                {EDUCATION_LEVELS.map(function (level) {
+                  return (
+                    <option key={level} value={level}>
+                      {level}
                     </option>
                   );
                 })}
@@ -413,7 +457,7 @@ export default function CreateJobModal({ onClose, onSuccess }) {
             </div>
           </div>
 
-          {/* Row 5: Description */}
+          {/* Row 6: Description */}
           <div>
             <label className="mb-1 block font-display text-sm font-medium text-text-primary">
               Description du poste <span className="text-red-400">*</span>
@@ -431,7 +475,7 @@ export default function CreateJobModal({ onClose, onSuccess }) {
             )}
           </div>
 
-          {/* Row 6: Compétences */}
+          {/* Row 7: Compétences */}
           <div>
             <label className="mb-1 block font-display text-sm font-medium text-text-primary">
               Compétences requises

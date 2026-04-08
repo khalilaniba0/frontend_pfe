@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
 
 import { ROUTES } from "constants/routes";
 import BrandLogo from "components/commun/LogoMarque.jsx";
@@ -85,6 +85,13 @@ export default function CandidateLogin() {
 
         <section className="flex w-full flex-1 items-center justify-center overflow-y-auto bg-[#f7fbff] p-5 md:p-8 lg:p-10">
           <div className="w-full max-w-md">
+            <Link
+              to={ROUTES.CANDIDATE_OFFRES}
+              aria-label="Retour a l'accueil"
+              className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 no-underline transition-colors hover:border-[#0072FF]/40 hover:text-[#0072FF]"
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+            </Link>
             <BrandLogo to={ROUTES.LANDING} className="mb-5" />
 
             <h2 className="font-display text-3xl font-bold text-[#0f2a47]">

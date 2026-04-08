@@ -45,15 +45,38 @@ var pipelineOrder = COLUMN_DEFS.map(function (c) {
 /* ── map backend candidature → card data ─────── */
 
 function mapCandidateCard(c) {
+  var scoreRaw = Number(c.scoreIA !== undefined ? c.scoreIA : c.score_ia);
+  var normalizedScore = Number.isFinite(scoreRaw)
+    ? Math.max(0, Math.min(100, Math.round(scoreRaw)))
+    : null;
+
+  var iaReport =
+    (c.rapportIA && typeof c.rapportIA === "object" && c.rapportIA) ||
+    (c.rapport_ia && typeof c.rapport_ia === "object" && c.rapport_ia) ||
+    null;
+
+  var iaDetails =
+    iaReport && iaReport.details && typeof iaReport.details === "object"
+      ? iaReport.details
+      : null;
+
+  var iaCvExtract =
+    iaReport && iaReport.cv_extrait && typeof iaReport.cv_extrait === "object"
+      ? iaReport.cv_extrait
+      : iaReport && iaReport.cvExtrait && typeof iaReport.cvExtrait === "object"
+        ? iaReport.cvExtrait
+        : null;
+
   return {
     id: c._id,
     name: c.nom || c.candidat?.nom || c.email || "Candidat",
     role: c.offre?.poste || c.poste || "Poste",
     job: c.offre?.poste || c.poste || "Poste",
-    priority:
-      c.scoreIA >= 70
+    priority: normalizedScore === null
+      ? "Analyse IA en cours"
+      : normalizedScore >= 70
         ? "Haute"
-        : c.scoreIA >= 40
+        : normalizedScore >= 40
           ? "Priorité moyenne"
           : "Normale",
     appliedDate: c.createdAt
@@ -64,7 +87,7 @@ function mapCandidateCard(c) {
       })
       : "",
     avatar: "",
-    score: c.scoreIA || 0,
+    score: normalizedScore,
     email: c.email || c.candidat?.email || "",
     phone: c.telephone || c.candidat?.telephone || "",
     location: c.offre?.localisation || "",
@@ -73,9 +96,18 @@ function mapCandidateCard(c) {
     linkedin: "",
     lettreMotivation: String(c.lettre_motivation || c.lettreMotivation || "").trim(),
     cv_url: c.cv_url || c.cvUrl || c.candidat?.cv_url || null,
+    iaReport: iaReport,
+    iaDetails: iaDetails,
+    iaCvExtract: iaCvExtract,
+    scoreStatus: normalizedScore === null ? "pending" : "ready",
     _etape: c.etape,
     _offreId: c.offre?._id || c.offre || "",
+    hasIaReport: Boolean(iaReport),
   };
+}
+
+function getSortableScore(candidate) {
+  return Number.isFinite(candidate?.score) ? candidate.score : -1;
 }
 
 export default function Recruitment() {
@@ -153,7 +185,7 @@ export default function Recruitment() {
         title: col.title,
         color: col.color,
         candidates: candidates.slice().sort(function (a, b) {
-          return b.score - a.score;
+          return getSortableScore(b) - getSortableScore(a);
         }),
       };
     });
@@ -169,10 +201,6 @@ export default function Recruitment() {
   }
 
   var filteredPipeline = buildPipeline(filteredCandidatures);
-
-  var totalCandidates = filteredPipeline.reduce(function (sum, col) {
-    return sum + col.candidates.length;
-  }, 0);
 
   /* ── top candidates per job ────────────────── */
 
@@ -195,7 +223,7 @@ export default function Recruitment() {
     Object.keys(jobGroups).forEach(function (job) {
       var candidates = jobGroups[job];
       var sorted = candidates.slice().sort(function (a, b) {
-        return b.score - a.score;
+        return getSortableScore(b) - getSortableScore(a);
       });
       if (sorted.length > 0) {
         topIds.push(sorted[0].id);
@@ -403,6 +431,29 @@ export default function Recruitment() {
 
   async function handleEntretienConfirm(dateEntretien, typeEntretien) {
     if (!entretienModal) return;
+
+    var parsedInterviewDate = new Date(dateEntretien);
+    if (!dateEntretien || Number.isNaN(parsedInterviewDate.getTime())) {
+      setErrorToast("Date d'entretien invalide.");
+      if (errorTimerRef.current) {
+        clearTimeout(errorTimerRef.current);
+      }
+      errorTimerRef.current = setTimeout(function () {
+        setErrorToast(null);
+      }, 3000);
+      return;
+    }
+
+    if (parsedInterviewDate.getTime() < Date.now()) {
+      setErrorToast("Impossible de planifier un entretien dans le passé.");
+      if (errorTimerRef.current) {
+        clearTimeout(errorTimerRef.current);
+      }
+      errorTimerRef.current = setTimeout(function () {
+        setErrorToast(null);
+      }, 3000);
+      return;
+    }
 
     var candidate = entretienModal.candidate;
     var fromColumn = entretienModal.fromColumn;

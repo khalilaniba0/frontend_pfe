@@ -104,6 +104,8 @@ export default function PipelineColumn({
                 appliedDate={candidate.appliedDate}
                 avatar={candidate.avatar}
                 score={candidate.score}
+                scoreStatus={candidate.scoreStatus}
+                hasIaReport={candidate.hasIaReport}
                 draggable={true}
                 onDragStart={function (e) {
                   onCandidateDragStart(candidateId, title, e);

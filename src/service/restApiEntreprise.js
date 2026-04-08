@@ -1,34 +1,22 @@
 import axios from "axios";
 import { API_ORIGIN, API_URL } from "config/api";
-
-function getAuthConfig() {
-  const token =
-    typeof window !== "undefined"
-      ? window.localStorage.getItem("token")
-      : null;
-
-  return {
-    withCredentials: true,
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  };
-}
+import {
+  AUTH_REQUEST_CONFIG,
+  buildMultipartAuthConfig,
+} from "./requestConfig";
 
 export async function getMyEntreprise() {
   return await axios.get(
     `${API_URL}/entreprise/getMyEntreprise`,
-    getAuthConfig(),
+    AUTH_REQUEST_CONFIG,
   );
 }
 
 export async function updateEntreprise(payload) {
-  const config = getAuthConfig();
-
-  if (typeof FormData !== "undefined" && payload instanceof FormData) {
-    config.headers = {
-      ...config.headers,
-      "Content-Type": "multipart/form-data",
-    };
-  }
+  const config =
+    typeof FormData !== "undefined" && payload instanceof FormData
+      ? buildMultipartAuthConfig()
+      : AUTH_REQUEST_CONFIG;
 
   return await axios.put(
     `${API_URL}/entreprise/updateEntreprise`,

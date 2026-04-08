@@ -6,7 +6,7 @@ import Toast from "components/commun/NotificationToast";
 import ModalBackdrop from "components/commun/FondModal";
 import { useToast } from "hooks/useNotificationsToast";
 import { useJobs } from "hooks/useOffresEntreprise";
-import { getPipelineCandidatures } from "service/restApiRecrutement";
+import { getCandidaturesByOffre } from "service/restApiRecrutement";
 
 import CreateJobModal from "components/Offres/ModalCreationOffre";
 
@@ -78,24 +78,39 @@ export default function Jobs() {
       var isMounted = true;
 
       async function loadCandidaturesStats() {
+        if (!Array.isArray(offres) || offres.length === 0) {
+          if (isMounted) {
+            setCandidaturesByOfferId({});
+          }
+          return;
+        }
+
         try {
-          var candidatures = await getPipelineCandidatures();
           var counts = {};
+          var offerIds = offres
+            .map(function (offre) {
+              return String(offre?._id || offre?.id || "").trim();
+            })
+            .filter(Boolean);
 
-          candidatures.forEach(function (candidature) {
-            var rawOffreId =
-              candidature?.offreId ||
-              candidature?.offre?._id ||
-              candidature?.offre?.id ||
-              candidature?.offre ||
-              "";
+          var results = await Promise.allSettled(
+            offerIds.map(function (offerId) {
+              return getCandidaturesByOffre(offerId);
+            })
+          );
 
-            var offreId = String(rawOffreId || "").trim();
-            if (!offreId) {
+          results.forEach(function (result, index) {
+            var offerId = offerIds[index];
+            if (!offerId) {
               return;
             }
 
-            counts[offreId] = (counts[offreId] || 0) + 1;
+            if (result.status === "fulfilled" && Array.isArray(result.value)) {
+              counts[offerId] = result.value.length;
+              return;
+            }
+
+            counts[offerId] = 0;
           });
 
           if (isMounted) {

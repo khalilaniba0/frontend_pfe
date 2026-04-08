@@ -2,9 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useCandidateAuth } from "context/ContexteAuthCandidat";
 import {
-  deleteNotificationByIdAlt,
-  deleteNotificationByIdAlt2,
-  deleteNotificationByIdAlt3,
   deleteNotificationById,
   getNotificationsByCandidat,
   markNotificationAsRead,
@@ -120,6 +117,45 @@ export default function useNotifications(options = {}) {
     }
   }, [fetchNotifications]);
 
+  const markAllAsRead = useCallback(async function () {
+    const unreadIds = notifications
+      .filter(function (notification) {
+        return notification?.statut !== "lue";
+      })
+      .map(function (notification) {
+        return notification?._id || notification?.id;
+      })
+      .filter(Boolean);
+
+    if (!unreadIds.length) {
+      return;
+    }
+
+    setNotifications(function (currentNotifications) {
+      return currentNotifications.map(function (notification) {
+        if (notification?.statut === "lue") {
+          return notification;
+        }
+
+        return { ...notification, statut: "lue" };
+      });
+    });
+
+    try {
+      await Promise.all(
+        unreadIds.map(function (notificationId) {
+          return markNotificationAsRead(notificationId);
+        })
+      );
+    } catch (requestError) {
+      setError(
+        requestError?.response?.data?.message ||
+          "Impossible de marquer les notifications comme lues."
+      );
+      fetchNotifications();
+    }
+  }, [fetchNotifications, notifications]);
+
   const unreadCount = useMemo(
     function () {
       return notifications.filter(function (notification) {
@@ -144,32 +180,7 @@ export default function useNotifications(options = {}) {
     });
 
     try {
-      const deleters = [
-        deleteNotificationById,
-        deleteNotificationByIdAlt,
-        deleteNotificationByIdAlt2,
-        deleteNotificationByIdAlt3,
-      ];
-
-      let lastError = null;
-      for (let index = 0; index < deleters.length; index += 1) {
-        try {
-          await deleters[index](id);
-          lastError = null;
-          break;
-        } catch (deleteError) {
-          const status = deleteError?.response?.status;
-          if (status === 404 || status === 405) {
-            lastError = deleteError;
-            continue;
-          }
-          throw deleteError;
-        }
-      }
-
-      if (lastError) {
-        throw lastError;
-      }
+      await deleteNotificationById(id);
     } catch (requestError) {
       setError(
         requestError?.response?.data?.message ||
@@ -186,6 +197,7 @@ export default function useNotifications(options = {}) {
     error,
     refetch: fetchNotifications,
     markAsRead,
+    markAllAsRead,
     deleteOne,
   };
 }

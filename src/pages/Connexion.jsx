@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import AuthLayout from "layouts/MiseEnPageAuth.jsx";
 import AuthHero from "components/Sections/HeroAuthentification.jsx";
@@ -8,7 +8,7 @@ import BrandLogo from "components/commun/LogoMarque.jsx";
 import AuthContext from "context/ContexteAuth";
 
 export default function Login() {
-  const { login } = useContext(AuthContext);
+  const { login, user, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,6 +21,18 @@ export default function Login() {
   const registered = useMemo(function () {
     return new URLSearchParams(location.search).get("registered") === "true";
   }, [location.search]);
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#007BFF] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  }
 
   const handleSubmit = async function (e) {
     e.preventDefault();
@@ -44,6 +56,13 @@ export default function Login() {
 
           <section className="flex w-full flex-1 items-center justify-center overflow-hidden bg-[#f7fbff] p-4 md:p-6 lg:p-7">
             <div className="w-full max-w-md">
+              <Link
+                to={ROUTES.LANDING}
+                aria-label="Retour a l'accueil"
+                className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 no-underline transition-colors hover:border-[#007BFF]/40 hover:text-[#007BFF]"
+              >
+                <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+              </Link>
               <BrandLogo to={ROUTES.LANDING} className="mb-5" />
 
               <div className="mb-5">

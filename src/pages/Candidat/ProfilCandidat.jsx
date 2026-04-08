@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useCandidateAuth } from "context/ContexteAuthCandidat";
 import { mettreAJourProfil } from "service/restApiCandidat";
+import { API_URL } from "config/api";
 
 export default function CandidateProfile() {
   const { candidat, refreshProfile } = useCandidateAuth();
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const apiUrl = API_URL;
 
   const [form, setForm] = useState({
     nom: candidat?.nom || "",

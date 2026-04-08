@@ -1,6 +1,6 @@
 # Architecture Frontend - Talentia ATS (CRA)
 
-Mise a jour: 2026-04-03
+Mise a jour: 2026-04-05
 
 ## Objectif
 
@@ -9,19 +9,23 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 
 ## Fichiers racine frontend_pfe/
 
+- `frontend_pfe/.env` : variables d'environnement frontend (ex: URL API CRA).
+- `frontend_pfe/.gitignore` : regles git pour les fichiers a ignorer (node_modules, build, fichiers d'environnement local). Utilise par git lors des commits.
 - `frontend_pfe/package.json` : dependances et scripts CRA. Utilise par npm/yarn.
+- `frontend_pfe/package-lock.json` : verrouillage des versions npm.
 - `frontend_pfe/jsconfig.json` : alias et resolution imports (`components/...`, `pages/...`). Utilise par tout le code `src`.
 - `frontend_pfe/tailwind.config.js` : configuration Tailwind. Utilise par `src/assets/styles/tailwind.css`.
-- `frontend_pfe/README.md` : guide de lancement du frontend.
-- `frontend_pfe/GUIDE_AXIOS_BACKEND.md` : guide de consommation API.
-- `frontend_pfe/CONSOMMATIONS_BACKEND_FAITES.md` : suivi des endpoints backend consommes.
-- `frontend_pfe/architecture.md` : cartographie des fichiers frontend.
+- `frontend_pfe/src_usage_map.txt` : inventaire/trace des usages dans `src`.
+- `frontend_pfe/architecture1.md` : cartographie des fichiers frontend (ce document).
 
 ## Public
 
 - `frontend_pfe/public/index.html` : page HTML racine CRA. Utilise par `src/index.js`.
 - `frontend_pfe/public/manifest.json` : metadonnees PWA.
 - `frontend_pfe/public/robots.txt` : directives robots.
+- `frontend_pfe/public/favicon.ico` : icone navigateur/onglet de l'application.
+- `frontend_pfe/public/logo192.png` : logo PWA 192x192. Utilise par `public/manifest.json`.
+- `frontend_pfe/public/logo512.png` : logo PWA 512x512. Utilise par `public/manifest.json`.
 
 ## Noyau src/
 
@@ -161,7 +165,7 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/hooks/useEntretiens.js` : logique entretiens (calendar + pipeline). Utilise par `src/pages/Entretiens.jsx`.
 - `src/hooks/useOffresEntreprise.js` : logique CRUD offres entreprise. Utilise par `src/pages/Offres.jsx`.
 - `src/hooks/useOffresPubliques.js` : logique lecture offres publiques/candidat. Utilise par pages candidat d'offres.
-- `src/hooks/useRecrutement.js` : logique recrutement (hook present, usage direct non trouve actuellement).
+- `src/hooks/useRecrutement.js` : logique recrutement (exporte `useRecruitment`; hook present mais non consomme directement actuellement).
 - `src/hooks/useUtilisateurs.js` : logique gestion utilisateurs. Utilise par `src/pages/Utilisateurs.jsx`.
 - `src/hooks/useNotificationsSysteme.js` : notifications candidat. Utilise par `PanneauNotifications` et `MiseEnPageCandidat`.
 - `src/hooks/useNotificationsToast.js` : helper toast global. Utilise par pages et composants avec feedback utilisateur.
@@ -178,7 +182,7 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/service/restApiNotifications.js` : endpoints notifications candidat. Utilise par `useNotificationsSysteme`.
 - `src/service/restApiOffresEntreprise.js` : endpoints offres entreprise. Utilise par `useOffresEntreprise`, `ModalCreationOffre`, `DetailOffrePublique`, `useOffresPubliques`.
 - `src/service/restApiOffresPubliques.js` : lecture offres publiques + token candidat. Utilise par `useOffresPubliques`, `BarreNavigation`.
-- `src/service/restApiRecrutement.js` : endpoints pipeline recrutement. Utilise par `useRecrutement`, `useEntretiens`, `Recrutement`.
+- `src/service/restApiRecrutement.js` : endpoints pipeline recrutement. Utilise par `useRecrutement`, `useEntretiens`, `Recrutement`, `Offres`.
 - `src/service/restApiTableauDeBord.js` : endpoints stats dashboard admin. Utilise par `useTableauDeBord`.
 - `src/service/restApiUtilisateurs.js` : endpoints utilisateurs. Utilise par `ContexteAuth`, `useUtilisateurs`, `TableauUtilisateurs`, `Entretiens`, `IntegrationsTab`, `ModalGestionUtilisateurs`.
 

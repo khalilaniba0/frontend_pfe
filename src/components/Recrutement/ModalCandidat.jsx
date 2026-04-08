@@ -12,9 +12,71 @@ export default function CandidateModal({
   findCandidateColumn,
 }) {
   function getScoreColor(scoreValue) {
+    if (scoreValue === null || scoreValue === undefined) return "text-text-muted";
     if (scoreValue <= 40) return "text-red-600";
     if (scoreValue <= 69) return "text-amber-600";
     return "text-emerald-600";
+  }
+
+  function normalizeScore(rawScore) {
+    var parsed = Number(rawScore);
+    if (!Number.isFinite(parsed)) return null;
+    return Math.max(0, Math.min(100, Math.round(parsed)));
+  }
+
+  function clampPercent(value) {
+    var parsed = Number(value);
+    if (!Number.isFinite(parsed)) return 0;
+    return Math.max(0, Math.min(100, parsed));
+  }
+
+  function formatDetailLabel(detailKey) {
+    var key = String(detailKey || "").toLowerCase();
+    if (key.indexOf("compet") !== -1) return "Competences";
+    if (key.indexOf("exp") !== -1) return "Experience";
+    if (key.indexOf("form") !== -1) return "Formation";
+    if (key.indexOf("lang") !== -1) return "Langues";
+    return String(detailKey || "Dimension");
+  }
+
+  function formatWeight(weightRaw) {
+    var weightValue = normalizeWeight(weightRaw);
+    if (weightValue === null) return null;
+    return weightValue + "%";
+  }
+
+  function normalizeWeight(weightRaw) {
+    var weight = Number(weightRaw);
+    if (!Number.isFinite(weight)) return null;
+    var percentage = weight <= 1 ? weight * 100 : weight;
+    return Math.round(Math.max(0, Math.min(100, percentage)));
+  }
+
+  function extractDetailRows(details) {
+    if (!details || typeof details !== "object") return [];
+
+    return Object.entries(details)
+      .map(function ([key, value]) {
+        var score = normalizeScore(value?.score);
+        var weightValue = normalizeWeight(value?.poids);
+        var weightLabel = formatWeight(value?.poids);
+        return {
+          key: key,
+          label: formatDetailLabel(key),
+          score: score,
+          weightValue: weightValue,
+          weightLabel: weightLabel,
+        };
+      })
+      .filter(function (row) {
+        if (row.weightValue === 0) return false;
+        return row.score !== null || row.weightLabel !== null;
+      })
+      .sort(function (a, b) {
+        var scoreA = a.score === null ? -1 : a.score;
+        var scoreB = b.score === null ? -1 : b.score;
+        return scoreB - scoreA;
+      });
   }
 
   var gradients = [
@@ -51,6 +113,47 @@ export default function CandidateModal({
   var nextStage = isLastStage ? null : pipelineOrder[currentIdx + 1];
   var isFinalStage = currentStage === "Offre";
   var canRefuse = candidate._etape !== "refuse" && candidate._etape !== "accepte";
+  var scoreValue = normalizeScore(candidate.score);
+  var scoreLabel = scoreValue === null ? "Analyse IA en cours" : scoreValue + "/100";
+  var scoreColorClass = getScoreColor(scoreValue);
+
+  var iaReport =
+    (candidate.iaReport && typeof candidate.iaReport === "object" && candidate.iaReport) ||
+    (candidate.rapportIA && typeof candidate.rapportIA === "object" && candidate.rapportIA) ||
+    (candidate.rapport_ia && typeof candidate.rapport_ia === "object" && candidate.rapport_ia) ||
+    null;
+
+  var iaDetails =
+    (candidate.iaDetails && typeof candidate.iaDetails === "object" && candidate.iaDetails) ||
+    (iaReport && iaReport.details && typeof iaReport.details === "object" && iaReport.details) ||
+    null;
+
+  var detailRows = extractDetailRows(iaDetails);
+
+  var iaCvExtract =
+    (candidate.iaCvExtract && typeof candidate.iaCvExtract === "object" && candidate.iaCvExtract) ||
+    (iaReport && iaReport.cv_extrait && typeof iaReport.cv_extrait === "object" && iaReport.cv_extrait) ||
+    (iaReport && iaReport.cvExtrait && typeof iaReport.cvExtrait === "object" && iaReport.cvExtrait) ||
+    null;
+
+  var cvCompetences = Array.isArray(iaCvExtract?.competences)
+    ? iaCvExtract.competences.filter(Boolean)
+    : [];
+  var cvLangues = Array.isArray(iaCvExtract?.langues)
+    ? iaCvExtract.langues.filter(Boolean)
+    : [];
+  var cvExperience =
+    typeof iaCvExtract?.experience === "string" ? iaCvExtract.experience.trim() : "";
+  var cvFormation =
+    typeof iaCvExtract?.formation === "string" ? iaCvExtract.formation.trim() : "";
+
+  var hasCvExtract =
+    cvCompetences.length > 0 ||
+    cvLangues.length > 0 ||
+    cvExperience.length > 0 ||
+    cvFormation.length > 0;
+
+  var hasIaInsights = detailRows.length > 0 || hasCvExtract;
   var motivationText = String(
     candidate.lettreMotivation || candidate.lettre_motivation || ""
   ).trim();
@@ -97,10 +200,8 @@ export default function CandidateModal({
               </h2>
               <p className="font-body text-sm text-text-secondary">
                 {candidate.role} •{" "}
-                <span
-                  className={"font-semibold " + getScoreColor(candidate.score)}
-                >
-                  Score IA : {candidate.score}/100
+                <span className={"font-semibold " + scoreColorClass}>
+                  Score IA : {scoreLabel}
                 </span>
               </p>
             </div>
@@ -184,6 +285,129 @@ export default function CandidateModal({
               </div>
             </div>
           )}
+
+          <div className="mb-2 border-t border-border pt-5">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="material-symbols-outlined text-lg text-text-muted">
+                psychology
+              </span>
+              <span className="font-body text-sm font-medium text-text-primary">
+                Analyse IA pour le RH
+              </span>
+            </div>
+
+            {!hasIaInsights ? (
+              <div className="rounded-xl border border-border bg-bg-soft/40 px-4 py-3">
+                <p className="font-body text-sm text-text-secondary">
+                  Rapport IA indisponible pour le moment. Le score peut arriver apres quelques secondes.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {detailRows.length > 0 && (
+                  <div className="rounded-xl border border-border bg-white px-4 py-3">
+                    <p className="mb-3 font-body text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      Score detaille par dimension
+                    </p>
+                    <div className="space-y-3">
+                      {detailRows.map(function (row) {
+                        return (
+                          <div key={row.key}>
+                            <div className="mb-1 flex items-center justify-between gap-2">
+                              <span className="font-body text-sm font-medium text-text-primary">
+                                {row.label}
+                              </span>
+                              <div className="flex items-center gap-2">
+                                {row.weightLabel && (
+                                  <span className="rounded-full bg-bg-soft px-2 py-0.5 font-body text-[11px] text-text-muted">
+                                    Poids {row.weightLabel}
+                                  </span>
+                                )}
+                                <span className={"font-body text-xs font-semibold " + getScoreColor(row.score)}>
+                                  {row.score === null ? "N/A" : row.score + "/100"}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                              <div
+                                className={
+                                  "h-full rounded-full " +
+                                  (row.score !== null && row.score >= 70
+                                    ? "bg-emerald-500"
+                                    : row.score !== null && row.score >= 40
+                                      ? "bg-amber-500"
+                                      : "bg-red-500")
+                                }
+                                style={{ width: clampPercent(row.score) + "%" }}
+                              ></div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {hasCvExtract && (
+                  <div className="rounded-xl border border-border bg-white px-4 py-3">
+                    <p className="mb-3 font-body text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      Extrait CV analyse
+                    </p>
+
+                    {cvCompetences.length > 0 && (
+                      <div className="mb-3">
+                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Competences</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {cvCompetences.map(function (skill, idx) {
+                            return (
+                              <span
+                                key={"skill-" + idx}
+                                className="rounded-full bg-primary/10 px-2 py-0.5 font-body text-xs text-primary"
+                              >
+                                {String(skill)}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {cvLangues.length > 0 && (
+                      <div className="mb-3">
+                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Langues</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {cvLangues.map(function (lang, idx) {
+                            return (
+                              <span
+                                key={"lang-" + idx}
+                                className="rounded-full bg-emerald-100 px-2 py-0.5 font-body text-xs text-emerald-700"
+                              >
+                                {String(lang)}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {cvExperience && (
+                      <div className="mb-3">
+                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Experience</p>
+                        <p className="font-body text-sm text-text-primary">{cvExperience}</p>
+                      </div>
+                    )}
+
+                    {cvFormation && (
+                      <div>
+                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Formation</p>
+                        <p className="font-body text-sm text-text-primary">{cvFormation}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
         </div>
 

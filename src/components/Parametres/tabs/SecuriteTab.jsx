@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import ManageUsersModal from "../ModalGestionUtilisateurs";
 import { useAuth } from "context/ContexteAuth";
-import { updatePassword } from "service/restApiAuthentification";
+import { changeMyPassword } from "service/restApiAuthentification";
 
 export default function SecuriteTab() {
   const { user } = useAuth();
@@ -67,6 +67,10 @@ export default function SecuriteTab() {
       setSaveError("Veuillez saisir un nouveau mot de passe");
       return;
     }
+    if (!passwords.current) {
+      setSaveError("Veuillez saisir votre mot de passe actuel");
+      return;
+    }
     if (passwords.new.length < 8) {
       setSaveError("Le mot de passe doit contenir au moins 8 caractères");
       return;
@@ -83,7 +87,7 @@ export default function SecuriteTab() {
 
     setSaving(true);
     try {
-      await updatePassword(user._id, passwords.new);
+      await changeMyPassword(passwords.current, passwords.new);
       setSaveSuccess(true);
       setPasswords({ current: "", new: "", confirm: "" });
     } catch (err) {

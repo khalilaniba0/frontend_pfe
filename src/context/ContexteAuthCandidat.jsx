@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom";
 import {
   connecterCandidat,
   deconnecterCandidat,
@@ -9,15 +10,11 @@ import {
 
 const CandidateAuthContext = createContext(null);
 const CANDIDAT_LOCAL_KEY = "candidat";
-const CANDIDAT_TOKEN_KEY = "candidatToken";
-
-function safeRead(storage, key) {
-  try {
-    return storage.getItem(key);
-  } catch {
-    return null;
-  }
-}
+const ADMIN_SESSION_KEY = "talentia_user";
+const ADMIN_LOCAL_USER_KEY = "user";
+const ADMIN_LOCAL_TOKEN_KEY = "token";
+const EVENT_CANDIDAT_LOGIN = "session:candidat-login";
+const EVENT_ADMIN_LOGIN = "session:admin-login";
 
 function safeWrite(storage, key, value) {
   try {
@@ -35,64 +32,66 @@ function safeRemove(storage, key) {
   }
 }
 
-function extractTokenFromResponse(res) {
-  return (
-    res?.data?.token ||
-    res?.data?.data?.token ||
-    res?.data?.accessToken ||
-    res?.data?.data?.accessToken ||
-    null
-  );
-}
-
 function setCandidatFromResponse(res, setCandidat) {
   const data = res?.data?.data || res?.data?.candidat || res?.data;
   if (data && typeof data === "object") {
     setCandidat(data);
     safeWrite(window.localStorage, CANDIDAT_LOCAL_KEY, JSON.stringify(data));
   }
+}
 
-  const token = extractTokenFromResponse(res);
-  if (token) {
-    safeWrite(window.localStorage, CANDIDAT_TOKEN_KEY, token);
-  }
+function clearAdminStoredSession() {
+  safeRemove(window.sessionStorage, ADMIN_SESSION_KEY);
+  safeRemove(window.localStorage, ADMIN_LOCAL_USER_KEY);
+  safeRemove(window.localStorage, ADMIN_LOCAL_TOKEN_KEY);
 }
 
 export function CandidateAuthProvider({ children }) {
+  const location = useLocation();
   const [candidat, setCandidat] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = Boolean(candidat);
+  const isCandidateSpaceRoute = location.pathname.startsWith("/candidat");
 
   useEffect(function () {
+    function handleAdminLogin() {
+      safeRemove(window.localStorage, CANDIDAT_LOCAL_KEY);
+      setCandidat(null);
+      setIsLoading(false);
+    }
+
+    window.addEventListener(EVENT_ADMIN_LOGIN, handleAdminLogin);
+    return function () {
+      window.removeEventListener(EVENT_ADMIN_LOGIN, handleAdminLogin);
+    };
+  }, []);
+
+  useEffect(function () {
+    if (!isCandidateSpaceRoute) {
+      setIsLoading(false);
+      return;
+    }
+
     async function hydrate() {
+      setIsLoading(true);
       try {
         const res = await getMonProfil();
         setCandidatFromResponse(res, setCandidat);
       } catch {
-        const storedRaw = safeRead(window.localStorage, CANDIDAT_LOCAL_KEY);
-        if (storedRaw) {
-          try {
-            const parsed = JSON.parse(storedRaw);
-            if (parsed && typeof parsed === "object") {
-              setCandidat(parsed);
-              return;
-            }
-          } catch {
-            safeRemove(window.localStorage, CANDIDAT_LOCAL_KEY);
-          }
-        }
-
+        safeRemove(window.localStorage, CANDIDAT_LOCAL_KEY);
         setCandidat(null);
       } finally {
         setIsLoading(false);
       }
     }
     hydrate();
-  }, []);
+  }, [isCandidateSpaceRoute]);
 
   const login = async function (email, motDePasse) {
     const res = await connecterCandidat(email, motDePasse);
+    clearAdminStoredSession();
+    window.dispatchEvent(new Event(EVENT_CANDIDAT_LOGIN));
     setCandidatFromResponse(res, setCandidat);
     return res;
   };
@@ -103,12 +102,13 @@ export function CandidateAuthProvider({ children }) {
     } finally {
       setCandidat(null);
       safeRemove(window.localStorage, CANDIDAT_LOCAL_KEY);
-      safeRemove(window.localStorage, CANDIDAT_TOKEN_KEY);
     }
   };
 
   const register = async function (payload) {
     const res = await inscrireCandidat(payload);
+    clearAdminStoredSession();
+    window.dispatchEvent(new Event(EVENT_CANDIDAT_LOGIN));
     setCandidatFromResponse(res, setCandidat);
     return res;
   };
@@ -118,7 +118,8 @@ export function CandidateAuthProvider({ children }) {
       const res = await getMonProfil();
       setCandidatFromResponse(res, setCandidat);
     } catch {
-      /* silently fail */
+      safeRemove(window.localStorage, CANDIDAT_LOCAL_KEY);
+      setCandidat(null);
     }
   };
 

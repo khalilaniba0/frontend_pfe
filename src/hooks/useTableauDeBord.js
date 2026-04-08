@@ -8,6 +8,7 @@ import {
 } from "../service/restApiTableauDeBord";
 
 function extractArray(response) {
+  if (Array.isArray(response)) return response;
   const payload = response?.data;
   if (Array.isArray(payload?.data)) return payload.data;
   if (Array.isArray(payload)) return payload;

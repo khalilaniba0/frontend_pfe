@@ -5,11 +5,12 @@ import {
   createEntretien,
   deleteEntretien,
   getAllEntretiens,
-  getRecruteurs,
 } from "../service/restApiEntretiens";
 import { getPipelineCandidatures } from "../service/restApiRecrutement";
+import { getAllUsers } from "../service/restApiUtilisateurs";
 
 function extractArray(response) {
+  if (Array.isArray(response)) return response;
   const payload = response?.data;
   if (Array.isArray(payload?.data)) return payload.data;
   if (Array.isArray(payload)) return payload;
@@ -39,7 +40,7 @@ export function useInterviews() {
     try {
       const [entretiensResult, usersResult, candidaturesResult] = await Promise.allSettled([
         getAllEntretiens(),
-        getRecruteurs(),
+        getAllUsers(),
         getPipelineCandidatures(),
       ]);
 

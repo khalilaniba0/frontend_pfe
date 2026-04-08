@@ -26,6 +26,35 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
   const [submitting, setSubmitting] = useState(false);
   const { toast, showToast, hideToast } = useToast();
 
+  const getTodayDateInputValue = function () {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+  };
+
+  const buildSelectedDateTime = function (dateValue, timeValue) {
+    if (!dateValue || !timeValue) return null;
+
+    const [year, month, day] = dateValue.split("-").map(Number);
+    const [hour, minute] = timeValue.split(":").map(Number);
+
+    if (
+      !Number.isFinite(year) ||
+      !Number.isFinite(month) ||
+      !Number.isFinite(day) ||
+      !Number.isFinite(hour) ||
+      !Number.isFinite(minute)
+    ) {
+      return null;
+    }
+
+    const selected = new Date(year, month - 1, day, hour, minute, 0, 0);
+    if (isNaN(selected.getTime())) return null;
+    return selected;
+  };
+
   const handleChange = function (e) {
     const { name, value } = e.target;
     setForm(function (prev) {
@@ -48,6 +77,17 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
     if (!form.date) errs.date = "Date requise";
     if (!form.heureDebut) errs.heureDebut = "Heure de début requise";
 
+    if (form.date && form.heureDebut) {
+      const selectedDateTime = buildSelectedDateTime(form.date, form.heureDebut);
+
+      if (!selectedDateTime) {
+        errs.date = "Date ou heure invalide";
+      } else if (selectedDateTime.getTime() < Date.now()) {
+        errs.date = "La date et l'heure ne peuvent pas etre dans le passe";
+        errs.heureDebut = "Choisissez une heure future";
+      }
+    }
+
     return errs;
   };
 
@@ -56,6 +96,12 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
+      if (errs.date || errs.heureDebut) {
+        showToast(
+          "Impossible de programmer un entretien dans une date ou une heure passee.",
+          "error"
+        );
+      }
       return;
     }
 
@@ -241,6 +287,7 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
                 name="date"
                 value={form.date}
                 onChange={handleChange}
+                min={getTodayDateInputValue()}
                 className={inputClass("date") + " pl-10"}
               />
             </div>

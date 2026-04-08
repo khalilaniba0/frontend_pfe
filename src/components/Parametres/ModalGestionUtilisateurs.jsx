@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { getAllUsers, deleteUser } from "service/restApiUtilisateurs";
-import { updatePassword } from "service/restApiAuthentification";
+import { updateUserPassword } from "service/restApiAuthentification";
 import Toast from "components/commun/NotificationToast";
 import { useToast } from "hooks/useNotificationsToast";
 
@@ -176,7 +176,7 @@ export default function ManageUsersModal({ onClose }) {
     setSavingPassword(true);
     setPasswordError("");
     try {
-      await updatePassword(userId, passwordForm.password);
+      await updateUserPassword(userId, passwordForm.password);
       setPasswordUserId(null);
       setPasswordForm({ password: "", confirm: "" });
       showToast("Mot de passe mis à jour avec succès.", "success");

@@ -41,7 +41,15 @@ export default function CandidateLayout() {
   const navigate = useNavigate();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { unreadCount } = useNotifications();
+  const {
+    unreadCount,
+    notifications,
+    isLoading,
+    error,
+    markAsRead,
+    markAllAsRead,
+    deleteOne,
+  } = useNotifications();
 
   async function handleLogout() {
     await logout();
@@ -160,8 +168,9 @@ export default function CandidateLayout() {
 
           <button
             type="button"
-            onClick={function () {
+            onClick={async function () {
               setIsNotificationOpen(true);
+              await markAllAsRead();
             }}
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-white text-text-secondary shadow-sm transition-colors hover:text-text-primary"
             aria-label="Ouvrir le centre de notifications"
@@ -223,6 +232,11 @@ export default function CandidateLayout() {
         onClose={function () {
           setIsNotificationOpen(false);
         }}
+        notifications={notifications}
+        isLoading={isLoading}
+        error={error}
+        markAsRead={markAsRead}
+        deleteOne={deleteOne}
       />
     </div>
   );

@@ -7,6 +7,8 @@ export default function CandidateCard({
   appliedDate = "N/A",
   avatar = "",
   score = null,
+  scoreStatus = "ready",
+  hasIaReport = false,
   onClick = null,
   draggable = false,
   onDragStart = function () {},
@@ -111,7 +113,13 @@ export default function CandidateCard({
         </div>
       </div>
 
-      {score !== undefined && score !== null && (
+      {scoreStatus === "pending" ? (
+        <div className="mb-3 rounded-lg border border-dashed border-amber-200 bg-amber-50 px-2.5 py-2">
+          <p className="font-body text-xs font-medium text-amber-700">
+            Analyse IA en cours...
+          </p>
+        </div>
+      ) : score !== undefined && score !== null ? (
         <div className="mb-3">
           <div className="mb-1 flex items-center justify-between">
             <span className="font-body text-xs text-text-muted">Score IA</span>
@@ -125,6 +133,13 @@ export default function CandidateCard({
               style={{ width: score + "%" }}
             ></div>
           </div>
+        </div>
+      ) : null}
+
+      {hasIaReport && (
+        <div className="mb-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 font-body text-[11px] font-medium text-primary">
+          <span className="material-symbols-outlined text-sm">psychology</span>
+          Rapport IA disponible
         </div>
       )}
 
@@ -146,6 +161,8 @@ CandidateCard.propTypes = {
   appliedDate: PropTypes.string,
   avatar: PropTypes.string,
   score: PropTypes.number,
+  scoreStatus: PropTypes.oneOf(["ready", "pending"]),
+  hasIaReport: PropTypes.bool,
   onClick: PropTypes.func,
   draggable: PropTypes.bool,
   onDragStart: PropTypes.func,

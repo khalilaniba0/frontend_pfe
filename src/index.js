@@ -11,11 +11,11 @@ import App from "./App";
 
 const root = createRoot(document.getElementById("root"));
 root.render(
-  <AuthProvider>
-    <CandidateAuthProvider>
-      <BrowserRouter>
+  <BrowserRouter>
+    <AuthProvider>
+      <CandidateAuthProvider>
         <App />
-      </BrowserRouter>
-    </CandidateAuthProvider>
-  </AuthProvider>
+      </CandidateAuthProvider>
+    </AuthProvider>
+  </BrowserRouter>
 );

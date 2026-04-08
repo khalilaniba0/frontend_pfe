@@ -4,7 +4,6 @@ import { ROUTES } from "constants/routes";
 import BrandLogo from "components/commun/LogoMarque.jsx";
 import { useAuth } from "context/ContexteAuth";
 import { useCandidateAuth } from "context/ContexteAuthCandidat";
-import { getCandidateJwtToken } from "service/restApiOffresPubliques";
 
 function getCandidateDisplayName(candidat) {
   if (!candidat || typeof candidat !== "object") {
@@ -49,8 +48,7 @@ export default function Navbar() {
   const isOffresPage = location.pathname.startsWith(ROUTES.CANDIDATE_OFFRES);
   const isCandidateMenu = isOffresPage && !isLandingPage;
 
-  const candidateToken = getCandidateJwtToken();
-  const isCandidateLoggedIn = Boolean(candidateToken || isCandidateAuthenticated);
+  const isCandidateLoggedIn = Boolean(isCandidateAuthenticated);
   const candidateName = getCandidateDisplayName(candidat);
 
   const isRhLoggedIn = Boolean(user);

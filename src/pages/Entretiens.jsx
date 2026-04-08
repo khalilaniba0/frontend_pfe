@@ -11,7 +11,7 @@ import Toast from "components/commun/NotificationToast";
 import { useToast } from "hooks/useNotificationsToast";
 import { useInterviews } from "hooks/useEntretiens";
 import { useAuth } from "context/ContexteAuth";
-import { connectGoogleCalendar } from "service/restApiEntretiens";
+import { connectGoogleCalendar, getEntretienById } from "service/restApiEntretiens";
 import { getUserById } from "service/restApiUtilisateurs";
 
 const CALENDAR_ALLOWED_ETAPES = new Set([
@@ -143,6 +143,10 @@ function hasGoogleTokens(googleTokens) {
     return Object.keys(googleTokens).length > 0;
   }
   return Boolean(googleTokens);
+}
+
+function extractPayload(response) {
+  return response?.data?.data || response?.data || null;
 }
 
 export default function Interviews() {
@@ -295,6 +299,51 @@ export default function Interviews() {
 
   const handleCreateInterview = async function (payload) {
     try {
+      const normalizedRole = String(user?.role || "").toLowerCase();
+      if (normalizedRole !== "admin" && normalizedRole !== "rh") {
+        showToast(
+          "Seuls les admins et les RH peuvent programmer un entretien.",
+          "error"
+        );
+        return null;
+      }
+
+      const rawInterviewDate = payload?.dateEntretien || payload?.date_entretien;
+      let interviewDate = null;
+
+      if (typeof rawInterviewDate === "string") {
+        const localDateMatch = rawInterviewDate.match(
+          /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/
+        );
+
+        if (localDateMatch) {
+          const year = Number(localDateMatch[1]);
+          const month = Number(localDateMatch[2]);
+          const day = Number(localDateMatch[3]);
+          const hour = Number(localDateMatch[4]);
+          const minute = Number(localDateMatch[5]);
+
+          interviewDate = new Date(year, month - 1, day, hour, minute, 0, 0);
+        }
+      }
+
+      if (!interviewDate && rawInterviewDate) {
+        interviewDate = new Date(rawInterviewDate);
+      }
+
+      if (!interviewDate || isNaN(interviewDate.getTime())) {
+        showToast("Date d'entretien invalide.", "error");
+        return null;
+      }
+
+      if (interviewDate.getTime() < Date.now()) {
+        showToast(
+          "Impossible de programmer un entretien dans le passe.",
+          "error"
+        );
+        return null;
+      }
+
       const normalizedEmail = normalizeText(
         payload?.candidatEmail || payload?.emailCandidat || payload?.email || ""
       );
@@ -400,8 +449,32 @@ export default function Interviews() {
             events={calendarEvents}
             currentMonth={now.getMonth()}
             currentYear={now.getFullYear()}
-            onEventClick={function (event) {
-              setSelectedInterview(event?.entretien || null);
+            onEventClick={async function (event) {
+              const fallbackInterview = event?.entretien || null;
+              setSelectedInterview(fallbackInterview);
+
+              const interviewId =
+                fallbackInterview?._id || fallbackInterview?.id || null;
+
+              if (!interviewId) {
+                return;
+              }
+
+              try {
+                const response = await getEntretienById(interviewId);
+                const detailedInterview = extractPayload(response);
+
+                if (detailedInterview && typeof detailedInterview === "object") {
+                  setSelectedInterview(function (previousInterview) {
+                    return {
+                      ...(previousInterview || {}),
+                      ...detailedInterview,
+                    };
+                  });
+                }
+              } catch {
+                // Keep existing event payload if details request fails.
+              }
             }}
           />
         )}

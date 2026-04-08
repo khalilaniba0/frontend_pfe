@@ -8,6 +8,9 @@ const AuthContext = createContext(null);
 const SESSION_KEY = "talentia_user";
 const LOCAL_USER_KEY = "user";
 const LOCAL_TOKEN_KEY = "token";
+const CANDIDAT_LOCAL_KEY = "candidat";
+const EVENT_CANDIDAT_LOGIN = "session:candidat-login";
+const EVENT_ADMIN_LOGIN = "session:admin-login";
 
 function safeRead(storage, key) {
   try {
@@ -69,6 +72,18 @@ function extractTokenFromResponse(response) {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(function () {
+    function handleCandidateLogin() {
+      clearStoredSession();
+      setUser(null);
+    }
+
+    window.addEventListener(EVENT_CANDIDAT_LOGIN, handleCandidateLogin);
+    return function () {
+      window.removeEventListener(EVENT_CANDIDAT_LOGIN, handleCandidateLogin);
+    };
+  }, []);
 
   useEffect(function () {
     async function checkSession() {
@@ -136,6 +151,10 @@ export function AuthProvider({ children }) {
     if (nextToken) {
       safeWrite(window.localStorage, LOCAL_TOKEN_KEY, nextToken);
     }
+
+    safeRemove(window.localStorage, CANDIDAT_LOCAL_KEY);
+    window.dispatchEvent(new Event(EVENT_ADMIN_LOGIN));
+
     return res;
   };
 
