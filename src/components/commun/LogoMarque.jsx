@@ -8,14 +8,15 @@ function BrandLogoContent({ textClassName, iconClassName }) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M12 2L4 7v10l8 5 8-5V7L12 2z"
-            stroke="white"
+            stroke="currentColor"
             strokeWidth="1.8"
             strokeLinejoin="round"
-            fill="rgba(255,255,255,0.2)"
+            fill="currentColor"
+            fillOpacity="0.15"
           />
           <path
             d="M12 8v8M8 10l4-2 4 2"
-            stroke="white"
+            stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
           />
@@ -23,7 +24,7 @@ function BrandLogoContent({ textClassName, iconClassName }) {
       </span>
 
       <span className={textClassName}>
-        Talen<span className="text-primary">tia</span>
+        Talen<span style={{ color: "var(--color-primary)" }}>tia</span>
       </span>
     </>
   );
@@ -32,22 +33,37 @@ function BrandLogoContent({ textClassName, iconClassName }) {
 export default function BrandLogo({
   to,
   className = "",
-  textClassName = "font-display text-xl font-bold tracking-tight text-text-primary",
-  iconClassName = "flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary shadow-lg shadow-primary/25",
+  variant = "light",
+  textClassName,
+  iconClassName,
 }) {
-  const sharedClassName = `inline-flex items-center gap-3 ${className}`.trim();
+  const isOnDark = variant === "dark";
+
+  const defaultTextClass =
+    textClassName ||
+    `font-display text-[20px] font-semibold tracking-[-0.28px] ${
+      isOnDark ? "text-white" : "text-[#1d1d1f]"
+    }`;
+
+  const defaultIconClass =
+    iconClassName ||
+    `flex h-8 w-8 items-center justify-center ${
+      isOnDark ? "text-white" : "text-[#0066cc]"
+    }`;
+
+  const sharedClassName = `inline-flex items-center gap-2 ${className}`.trim();
 
   if (to) {
     return (
       <Link to={to} className={`${sharedClassName} no-underline`} aria-label="Talentia">
-        <BrandLogoContent textClassName={textClassName} iconClassName={iconClassName} />
+        <BrandLogoContent textClassName={defaultTextClass} iconClassName={defaultIconClass} />
       </Link>
     );
   }
 
   return (
     <div className={sharedClassName} aria-label="Talentia">
-      <BrandLogoContent textClassName={textClassName} iconClassName={iconClassName} />
+      <BrandLogoContent textClassName={defaultTextClass} iconClassName={defaultIconClass} />
     </div>
   );
 }

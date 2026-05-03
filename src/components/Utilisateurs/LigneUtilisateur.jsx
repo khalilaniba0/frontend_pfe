@@ -25,51 +25,39 @@ export default function UserRow({ user }) {
       .toUpperCase();
   };
 
-  const gradients = [
-    "from-pink-400 to-rose-500",
-    "from-sky-400 to-blue-500",
-    "from-amber-400 to-orange-500",
-    "from-emerald-400 to-teal-500",
-    "from-violet-400 to-purple-500",
-  ];
-
-  const gradientIndex =
-    userName.split("").reduce(function (acc, char) {
-      return acc + char.charCodeAt(0);
-    }, 0) % gradients.length;
-
   const getRoleBadgeClasses = function (role) {
     if (role === "Admin") {
-      return "bg-primary-light text-primary border-primary/20";
+      return "badge-active";
     }
-    return "bg-secondary-light text-secondary border-secondary/20";
+    return "badge-inactive";
   };
 
   return (
-    <tr className="group block border-b border-border transition-colors duration-150 hover:bg-bg-soft/50 p-4 md:table-row md:p-0">
+    <tr className="group block border-b p-4 transition-colors duration-150 md:table-row md:p-0" style={{ borderColor: "var(--color-divider-soft)" }}>
       <td className="block px-0 py-2 md:table-cell md:px-4 md:py-4">
         <div className="flex items-center gap-3">
           {user.avatar ? (
             <img
               src={user.avatar}
               alt={userName}
-              className="h-10 w-10 rounded-xl object-cover"
+              className="avatar-image h-10 w-10 rounded-[var(--rounded-pill)] object-cover"
             />
           ) : (
             <div
-              className={
-                "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br font-body text-xs font-bold text-white shadow-sm " +
-                gradients[gradientIndex]
-              }
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[var(--rounded-pill)] font-text text-xs font-semibold"
+              style={{
+                backgroundColor: "var(--color-canvas-parchment)",
+                color: "var(--color-ink)",
+              }}
             >
               {getInitials(userName)}
             </div>
           )}
           <div className="min-w-0">
-            <p className="truncate font-body text-sm font-semibold text-text-primary">
+            <p className="truncate font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>
               {userName}
             </p>
-            <p className="truncate font-body text-xs text-text-secondary">
+            <p className="truncate font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
               {user.email}
             </p>
           </div>
@@ -78,12 +66,9 @@ export default function UserRow({ user }) {
 
       <td className="block px-0 py-2 md:table-cell md:px-4 md:py-4">
         <div className="flex items-center justify-between md:justify-start">
-          <span className="font-body text-xs text-text-muted md:hidden">Rôle</span>
+          <span className="font-text text-[12px] md:hidden" style={{ color: "var(--color-ink-muted-48)" }}>Rôle</span>
           <span
-            className={
-              "inline-flex rounded-lg border px-2.5 py-1 font-body text-xs font-medium " +
-              getRoleBadgeClasses(user.role)
-            }
+            className={getRoleBadgeClasses(user.role)}
           >
             {user.role}
           </span>
@@ -92,8 +77,8 @@ export default function UserRow({ user }) {
 
       <td className="block px-0 py-2 md:table-cell md:px-4 md:py-4">
         <div className="flex items-center justify-between md:justify-start">
-          <span className="font-body text-xs text-text-muted md:hidden">Dernière connexion</span>
-          <p className="font-body text-sm text-text-secondary">
+          <span className="font-text text-[12px] md:hidden" style={{ color: "var(--color-ink-muted-48)" }}>Dernière connexion</span>
+          <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
             {formatDerniereConnexion(user.derniereConnexion)}
           </p>
         </div>

@@ -15,17 +15,26 @@ const socialIcons = [
 
 export default function Footer() {
   return (
-    <footer id="a-propos" className="th-footer-section scroll-mt-28 bg-white border-t border-slate-100 pt-12 pb-6 px-8">
-      <div className="max-w-[1200px] mx-auto">
-
+    <footer
+      id="a-propos"
+      className="scroll-mt-28"
+      style={{
+        backgroundColor: "var(--color-canvas-parchment)",
+        fontFamily: "var(--font-text)",
+        padding: "64px 32px",
+      }}
+    >
+      <div className="mx-auto max-w-[1440px]">
         {/* Top grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-
+        <div className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <BrandLogo to={ROUTES.LANDING} />
 
-            <p className="font-body text-sm text-slate-400 leading-relaxed max-w-[200px]">
+            <p
+              className="max-w-[200px] font-text text-[17px] font-normal leading-[2.41]"
+              style={{ color: "var(--color-ink-muted-80)" }}
+            >
               La plateforme ATS nouvelle génération pour les équipes RH modernes.
             </p>
 
@@ -35,7 +44,20 @@ export default function Footer() {
                 <button
                   key={i}
                   title={s.label}
-                  className="w-[34px] h-[34px] rounded-lg bg-bg-soft border-[1.5px] border-slate-200 flex items-center justify-center text-slate-400 transition-all hover:border-primary hover:text-primary-dark hover:bg-primary/[0.06]"
+                  className="flex h-[34px] w-[34px] items-center justify-center rounded-[var(--rounded-sm)] border-none transition-colors"
+                  style={{
+                    backgroundColor: "var(--color-canvas)",
+                    border: "1px solid var(--color-hairline)",
+                    color: "var(--color-ink-muted-48)",
+                  }}
+                  onMouseEnter={function (e) {
+                    e.currentTarget.style.color = "var(--color-primary)";
+                    e.currentTarget.style.borderColor = "var(--color-primary)";
+                  }}
+                  onMouseLeave={function (e) {
+                    e.currentTarget.style.color = "var(--color-ink-muted-48)";
+                    e.currentTarget.style.borderColor = "var(--color-hairline)";
+                  }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d={s.d} />
@@ -48,7 +70,10 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h5 className="font-body font-bold text-[0.8125rem] text-slate-900 mb-4 tracking-wide uppercase">
+              <h5
+                className="mb-4 font-text text-[14px] font-semibold"
+                style={{ color: "var(--color-ink)", letterSpacing: "-0.224px" }}
+              >
                 {category}
               </h5>
               <ul className="flex flex-col gap-2">
@@ -56,7 +81,18 @@ export default function Footer() {
                   <li key={link}>
                     <button
                       type="button"
-                      className="font-body text-sm text-slate-500 hover:text-primary transition-colors"
+                      className="border-none bg-transparent p-0 font-text text-[17px] font-normal transition-colors"
+                      style={{
+                        color: "var(--color-ink-muted-80)",
+                        lineHeight: "2.41",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={function (e) {
+                        e.currentTarget.style.color = "var(--color-primary)";
+                      }}
+                      onMouseLeave={function (e) {
+                        e.currentTarget.style.color = "var(--color-ink-muted-80)";
+                      }}
                     >
                       {link}
                     </button>
@@ -67,19 +103,18 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex flex-wrap justify-between items-center gap-4 pt-6 border-t border-slate-100">
-          <p className="font-body text-[0.8125rem] text-slate-400">
-            © 2026 Talentia ATS. Tous droits réservés.
+        {/* Legal line */}
+        <div
+          className="pt-6"
+          style={{ borderTop: "1px solid var(--color-hairline)" }}
+        >
+          <p
+            className="font-text text-[12px] font-normal"
+            style={{ color: "var(--color-ink-muted-48)", letterSpacing: "-0.12px" }}
+          >
+            © {new Date().getFullYear()} Talentia. Tous droits réservés.
           </p>
-          <div className="flex items-center gap-2">
-            <div className="w-[7px] h-[7px] rounded-full bg-success shadow-[0_0_6px_rgba(22,163,74,0.5)]" />
-            <span className="font-body text-xs text-slate-400">
-              Tous les systèmes opérationnels · 99.9% uptime
-            </span>
-          </div>
         </div>
-
       </div>
     </footer>
   );

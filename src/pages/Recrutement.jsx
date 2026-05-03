@@ -3,6 +3,7 @@ import PipelineColumn from "components/Recrutement/ColonnePipeline.jsx";
 import CandidateModal from "components/Recrutement/ModalCandidat.jsx";
 import EntretienModal from "components/Recrutement/EntretienModal.jsx";
 import ModalBackdrop from "components/commun/FondModal";
+import { API_URL } from "config/api";
 import {
   getPipelineCandidatures,
   updateCandidatureEtape,
@@ -86,7 +87,7 @@ function mapCandidateCard(c) {
         year: "numeric",
       })
       : "",
-    avatar: "",
+    avatar: c.photo_url || c.candidat?.photo_url ? `${API_URL}/profile-photos/${c.photo_url || c.candidat?.photo_url}` : "",
     score: normalizedScore,
     email: c.email || c.candidat?.email || "",
     phone: c.telephone || c.candidat?.telephone || "",
@@ -692,24 +693,24 @@ export default function Recruitment() {
     return (
       <div className="animate-fade-in">
         <header className="mb-6">
-          <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+          <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
             Pipeline de recrutement
           </h1>
-          <p className="mt-1 font-body text-sm text-text-secondary">
+          <p className="mt-1 font-text text-[14px]" style={{ color: 'var(--color-ink-muted-48)' }}>
             Chargement...
           </p>
         </header>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
           {[1, 2, 3, 4, 5].map(function (i) {
             return (
               <div
                 key={i}
-                className="w-72 flex-shrink-0 animate-pulse rounded-2xl border border-border bg-white p-4"
+                className="apple-card w-72 flex-shrink-0 animate-pulse"
               >
-                <div className="mb-4 h-4 w-24 rounded bg-gray-200"></div>
+                <div className="mb-4 h-4 w-24 rounded" style={{ backgroundColor: 'var(--color-divider-soft)' }}></div>
                 <div className="space-y-3">
-                  <div className="h-20 rounded-xl bg-gray-100"></div>
-                  <div className="h-20 rounded-xl bg-gray-100"></div>
+                  <div className="h-20 rounded-[var(--rounded-sm)]" style={{ backgroundColor: 'var(--color-canvas-parchment)' }}></div>
+                  <div className="h-20 rounded-[var(--rounded-sm)]" style={{ backgroundColor: 'var(--color-canvas-parchment)' }}></div>
                 </div>
               </div>
             );
@@ -723,19 +724,20 @@ export default function Recruitment() {
     return (
       <div className="animate-fade-in">
         <header className="mb-6">
-          <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+          <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
             Pipeline de recrutement
           </h1>
         </header>
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
-          <span className="material-symbols-outlined mb-2 text-3xl text-red-400">
+        <div className="apple-card p-8 text-center" style={{ borderColor: '#ff3b30' }}>
+          <span className="material-symbols-outlined mb-2 text-3xl" style={{ color: '#ff3b30' }}>
             error
           </span>
-          <p className="font-body text-sm text-red-600">{error}</p>
+          <p className="font-text text-[14px]" style={{ color: '#ff3b30' }}>{error}</p>
           <button
             type="button"
             onClick={loadData}
-            className="mt-3 rounded-lg bg-red-100 px-4 py-2 font-body text-sm font-medium text-red-700 transition-colors hover:bg-red-200"
+            className="button-ghost-pill mt-3"
+            style={{ fontSize: '14px', padding: '8px 20px' }}
           >
             Réessayer
           </button>
@@ -747,23 +749,24 @@ export default function Recruitment() {
   return (
     <div className="animate-fade-in">
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+         <div>
+          <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
             Pipeline de recrutement
           </h1>
         </div>
 
         <div className="flex w-full items-center gap-3 sm:w-auto">
           <div className="relative">
-            <span className="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-text-muted">
+            <span className="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{ color: 'var(--color-ink-muted-48)' }}>
               filter_list
             </span>
             <select
-              className="min-w-[180px] appearance-none rounded-xl border border-border bg-white py-2.5 pl-10 pr-10 font-body text-sm text-text-primary shadow-sm transition-all duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="apple-select min-w-[220px] rounded-xl border border-border bg-white pl-10 pr-10 shadow-sm ring-0 outline-none focus:border-primary focus:ring-0 focus:outline-none"
               value={selectedJob}
               onChange={function (e) {
                 setSelectedJob(e.target.value);
               }}
+              style={{ appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}
             >
               {jobOpenings.map(function (job) {
                 return (
@@ -773,14 +776,14 @@ export default function Recruitment() {
                 );
               })}
             </select>
-            <span className="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-lg text-text-muted">
+            <span className="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-lg" style={{ color: 'var(--color-ink-muted-48)' }}>
               expand_more
             </span>
           </div>
         </div>
       </header>
 
-      <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-4 md:-mx-0 md:px-0">
+      <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar w-full">
         {filteredPipeline.map(function (column) {
           var isCandidatureColumn = column.title === "Candidature";
           return (
@@ -821,17 +824,17 @@ export default function Recruitment() {
       />
 
       {lastMove && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-text-primary px-4 py-3 text-white shadow-lg animate-fade-in sm:right-auto sm:max-w-md">
-          <span className="material-symbols-outlined text-lg text-secondary">
+        <div className="fixed bottom-4 right-6 z-50 flex items-center gap-3 rounded-[var(--rounded-sm)] px-4 py-3 animate-fade-in sm:max-w-md" style={{ backgroundColor: '#ffffff', color: 'var(--color-ink)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', border: '1px solid var(--color-hairline)' }}>
+          <span className="material-symbols-outlined text-lg" style={{ color: 'var(--color-primary)' }}>
             check_circle
           </span>
-          <span className="min-w-0 flex-1 truncate font-body text-sm font-medium">
+          <span className="min-w-0 flex-1 truncate font-text text-[14px] font-normal">
             {lastMove.candidate.name} → {lastMove.toColumn}
           </span>
           <button
             type="button"
             onClick={cancelLastMove}
-            className="ml-2 font-body text-sm font-medium text-white/70 transition-colors hover:text-white"
+            className="ml-2 font-text text-[14px] font-normal transition-colors" style={{ color: 'rgba(255,255,255,0.6)' }}
           >
             Annuler
           </button>
@@ -839,26 +842,26 @@ export default function Recruitment() {
       )}
 
       {errorToast && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-red-500 px-4 py-3 text-white shadow-lg animate-fade-in sm:right-auto sm:max-w-md">
-          <span className="break-words font-body text-sm font-medium">
+        <div className="fixed bottom-4 right-6 z-50 flex items-center gap-3 rounded-[var(--rounded-sm)] px-4 py-3 animate-fade-in sm:max-w-md" style={{ backgroundColor: '#ff3b30', color: '#ffffff' }}>
+          <span className="break-words font-text text-[14px] font-normal">
             {errorToast}
           </span>
         </div>
       )}
 
       {successToast && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-emerald-500 px-4 py-3 text-white shadow-lg animate-fade-in sm:right-auto sm:max-w-md">
+        <div className="fixed bottom-4 right-6 z-50 flex items-center gap-3 rounded-[var(--rounded-sm)] px-4 py-3 animate-fade-in sm:max-w-md" style={{ backgroundColor: '#1d6b1d', color: '#ffffff' }}>
           <span className="material-symbols-outlined text-lg">check_circle</span>
-          <span className="break-words font-body text-sm font-medium">
+          <span className="break-words font-text text-[14px] font-normal">
             {successToast}
           </span>
         </div>
       )}
 
       {warningToast && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-amber-500 px-4 py-3 text-white shadow-lg animate-fade-in sm:right-auto sm:max-w-md">
+        <div className="fixed bottom-4 right-6 z-50 flex items-center gap-3 rounded-[var(--rounded-sm)] px-4 py-3 animate-fade-in sm:max-w-md" style={{ backgroundColor: '#7a5c00', color: '#ffffff' }}>
           <span className="material-symbols-outlined text-lg">warning</span>
-          <span className="break-words font-body text-sm font-medium">
+          <span className="break-words font-text text-[14px] font-normal">
             {warningToast}
           </span>
         </div>
@@ -866,12 +869,12 @@ export default function Recruitment() {
 
       {dragging && (
         <div
-          className={
-            "fixed bottom-8 left-1/2 z-50 -translate-x-1/2 flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed px-8 py-5 transition-all duration-200 shadow-xl " +
-            (trashHover
-              ? "border-red-500 bg-red-50 scale-110"
-              : "border-red-300 bg-white/90")
-          }
+          className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 flex flex-col items-center gap-2 rounded-[var(--rounded-lg)] border-2 border-dashed px-8 py-5 transition-all duration-200"
+          style={{
+            borderColor: trashHover ? '#ff3b30' : 'var(--color-hairline)',
+            backgroundColor: trashHover ? '#fff0f0' : 'var(--color-canvas)',
+            transform: trashHover ? 'translateX(-50%) scale(1.05)' : 'translateX(-50%) scale(1)',
+          }}
           onDragOver={function (e) {
             e.preventDefault();
             setTrashHover(true);
@@ -886,18 +889,14 @@ export default function Recruitment() {
           onDrop={handleTrashDrop}
         >
           <span
-            className={
-              "material-symbols-outlined text-4xl transition-colors duration-200 " +
-              (trashHover ? "text-red-600" : "text-red-400")
-            }
+            className="material-symbols-outlined text-4xl transition-colors duration-200"
+            style={{ color: trashHover ? '#ff3b30' : 'var(--color-ink-muted-48)' }}
           >
             delete
           </span>
           <span
-            className={
-              "font-body text-sm font-semibold transition-colors duration-200 " +
-              (trashHover ? "text-red-600" : "text-red-400")
-            }
+            className="font-text text-[14px] font-semibold transition-colors duration-200"
+            style={{ color: trashHover ? '#ff3b30' : 'var(--color-ink-muted-48)' }}
           >
             {trashHover ? "Relâcher pour rejeter" : "Glisser ici pour rejeter"}
           </span>
@@ -911,27 +910,28 @@ export default function Recruitment() {
           }}
         >
           <div
-            className="relative w-full rounded-t-2xl border border-border bg-white p-6 shadow-2xl md:max-w-md md:rounded-2xl"
+            className="apple-card modal-animate relative w-full p-6 md:max-w-md"
+            style={{ borderRadius: 'var(--rounded-lg)' }}
             onClick={function (e) {
               e.stopPropagation();
             }}
           >
             <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-100">
-                <span className="material-symbols-outlined text-2xl text-red-600">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[var(--rounded-sm)]" style={{ backgroundColor: '#fff0f0', color: '#ff3b30' }}>
+                <span className="material-symbols-outlined text-2xl">
                   person_remove
                 </span>
               </div>
               <div>
-                <h3 className="font-display text-base font-bold text-text-primary">
+                <h3 className="font-display text-[17px] font-semibold" style={{ color: 'var(--color-ink)' }}>
                   Rejeter le candidat
                 </h3>
-                <p className="font-body text-sm text-text-secondary">
+                <p className="font-text text-[14px]" style={{ color: 'var(--color-ink-muted-48)' }}>
                   Cette action place le candidat dans l'etape Refuse.
                 </p>
               </div>
             </div>
-            <p className="mb-6 rounded-xl bg-red-50 px-4 py-3 font-body text-sm text-red-700">
+            <p className="mb-6 rounded-[var(--rounded-sm)] px-4 py-3 font-text text-[14px]" style={{ backgroundColor: '#fff0f0', color: '#ff3b30' }}>
               Etes-vous sur de vouloir rejeter{" "}
               <span className="font-semibold">{rejectConfirm.name}</span> ?
             </p>
@@ -941,14 +941,16 @@ export default function Recruitment() {
                 onClick={function () {
                   setRejectConfirm(null);
                 }}
-                className="rounded-xl border border-border bg-white px-4 py-2.5 font-body text-sm font-medium text-text-secondary transition-all hover:bg-bg-soft"
+                className="button-ghost-pill"
+                style={{ fontSize: '14px', padding: '10px 20px' }}
               >
                 Annuler
               </button>
               <button
                 type="button"
                 onClick={confirmReject}
-                className="flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 font-body text-sm font-medium text-white shadow-md transition-all hover:bg-red-600"
+                className="button-primary flex items-center gap-2"
+                style={{ backgroundColor: '#ff3b30', fontSize: '14px', padding: '10px 20px' }}
               >
                 <span className="material-symbols-outlined text-lg">
                   person_remove

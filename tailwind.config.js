@@ -4,52 +4,62 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // ── Couleurs existantes du projet ──────────────────────────────
+        // ── Apple Design System tokens – LIGHT THEME ONLY ──────────────────────────
         primary: {
-          DEFAULT: "#13c8ec",
-          light: "#f0fdff",
-          dark: "#0891b2",
+          DEFAULT: "#0066cc",
+          focus: "#0071e3",
         },
-        secondary: {
-          DEFAULT: "#36d1bc",
-          light: "#f0fdfb",
+        ink: {
+          DEFAULT: "#1d1d1f",
+          secondary: "#6e6e73",
+          disabled: "#a1a1a6",
+          "muted-80": "#333333",
+          "muted-48": "#7a7a7a",
         },
-        text: {
-          primary: "#0f172a",
-          secondary: "#64748b",
-          muted: "#94a3b8",
+        canvas: {
+          DEFAULT: "#ffffff",
+          parchment: "#f5f5f7",
         },
-        border: "#e2e8f0",
-        "bg-soft": "#f8fafc",
-        "bg-page": "#f6f8f8",
-        success: "#16a34a",
+        surface: {
+          pearl: "#fafafc",
+          DEFAULT: "#ffffff",
+          secondary: "#fafafc",
+        },
+        hairline: "#e0e0e0",
+        divider: {
+          soft: "#f0f0f0",
+        },
+        "body-muted": "#6e6e73",
+        "on-primary": "#ffffff",
 
-        // ── Tokens Material Design — thème Indigo/Violet (Jobs page) ───
-        "md-primary": "#3730a3",
-        "md-secondary": "#4f46e5",
-        "md-surface": "#f7f9fb",
-        "md-surface-container": "#eceef0",
-        "md-surface-container-low": "#f2f4f6",
-        "md-surface-container-lowest": "#ffffff",
-        "md-surface-container-high": "#e6e8ea",
-        "md-surface-container-highest": "#e0e3e5",
-        "md-surface-dim": "#d8dadc",
-        "md-on-surface": "#191c1e",
-        "md-on-surface-variant": "#43474f",
-        "md-secondary-container": "#ede9fe",
-        "md-on-secondary-container": "#4338ca",
-        "md-primary-fixed-dim": "#c4b5fd",
-        "md-on-primary-container": "#799dd6",
-        "md-tertiary-fixed": "#ffdbca",
-        "md-on-tertiary-fixed-variant": "#723610",
-        "md-outline-variant": "#c3c6d1",
+        // ── Legacy aliases (prevents breakage) ──────────────────
+        text: {
+          primary: "#1d1d1f",
+          secondary: "#6e6e73",
+          muted: "#6e6e73",
+        },
+        border: "#e0e0e0",
+        "bg-soft": "#f5f5f7",
+        "bg-page": "#f5f5f7",
+        success: "#1d6b1d",
       },
       fontFamily: {
-        display: ["Syne", "sans-serif"],
-        body: ["DM Sans", "sans-serif"],
-        // aliases utilisés dans la page Jobs
-        headline: ["Syne", "sans-serif"],
-        label: ["DM Sans", "sans-serif"],
+        display: ['"SF Pro Display"', "system-ui", "-apple-system", "sans-serif"],
+        body: ['"SF Pro Text"', "system-ui", "-apple-system", "sans-serif"],
+        text: ['"SF Pro Text"', "system-ui", "-apple-system", "sans-serif"],
+      },
+      borderRadius: {
+        sm: "8px",
+        md: "11px",
+        lg: "18px",
+        pill: "9999px",
+      },
+      spacing: {
+        section: "80px",
+      },
+      boxShadow: {
+        product: "rgba(0, 0, 0, 0.22) 3px 5px 30px",
+        none: "none",
       },
     },
   },

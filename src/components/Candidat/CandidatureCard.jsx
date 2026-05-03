@@ -3,21 +3,21 @@ import PropTypes from "prop-types";
 import { resolveEntrepriseMediaUrl } from "service/restApiEntreprise";
 
 const ETAPE_LABELS = {
-  soumise: { label: "Candidature reçue", color: "bg-gray-100 text-gray-600" },
+  soumise: { label: "Candidature reçue", color: "badge-inactive" },
   preselectionne: {
     label: "En cours d'examen",
-    color: "bg-blue-100 text-blue-700",
+    color: "badge-pending",
   },
   entretien_planifie: {
     label: "Entretien prévu",
-    color: "bg-amber-50 text-amber-600",
+    color: "badge-pending",
   },
   entretien_passe: {
     label: "Entretien passé",
-    color: "bg-purple-100 text-purple-700",
+    color: "badge-inactive",
   },
-  accepte: { label: "Accepté", color: "bg-emerald-50 text-emerald-600" },
-  refuse: { label: "Refusé", color: "bg-red-50 text-red-600" },
+  accepte: { label: "Accepté", color: "badge-active" },
+  refuse: { label: "Refusé", color: "badge-inactive" },
 };
 
 function formatDate(dateStr) {
@@ -68,9 +68,13 @@ export default function CandidatureCard({ candidature, onAnnuler, onOpenDetails 
 
   return (
     <div
-      className={`group rounded-2xl border border-border bg-white p-5 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md ${
+      className={`group card-animate rounded-[var(--rounded-lg)] border p-5 transition-all duration-200 ${
         isInteractive ? "cursor-pointer" : ""
       }`}
+      style={{
+        borderColor: "var(--color-hairline)",
+        backgroundColor: "var(--color-canvas)",
+      }}
       onClick={handleOpenDetails}
       onKeyDown={function (e) {
         if (!isInteractive) return;
@@ -88,10 +92,23 @@ export default function CandidatureCard({ candidature, onAnnuler, onOpenDetails 
         {/* Logo entreprise */}
         <div
           className={
-            "flex h-12 w-12 shrink-0 items-center justify-center font-display text-sm font-bold shadow-sm " +
+            "flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--rounded-sm)] font-display text-sm font-semibold " +
             (shouldShowLogo
-              ? "overflow-hidden rounded-xl border border-slate-200 bg-white"
-              : "rounded-xl bg-gradient-to-br from-primary to-secondary text-white")
+              ? "overflow-hidden"
+              : "")
+          }
+          style={
+            shouldShowLogo
+              ? {
+                  border: "1px solid var(--color-hairline)",
+                  backgroundColor: "var(--color-canvas)",
+                  boxShadow: "var(--shadow-product)",
+                }
+              : {
+                  border: "1px solid rgba(0, 102, 204, 0.2)",
+                  backgroundColor: "var(--color-canvas-parchment)",
+                  color: "var(--color-primary)",
+                }
           }
         >
           {shouldShowLogo ? (
@@ -112,17 +129,20 @@ export default function CandidatureCard({ candidature, onAnnuler, onOpenDetails 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h3 className="truncate font-display text-base font-bold text-text-primary group-hover:text-primary transition-colors">
+              <h3
+                className="truncate font-text text-[17px] transition-colors"
+                style={{ color: "var(--color-ink)", fontWeight: 600, letterSpacing: "-0.374px" }}
+              >
                 {poste}
               </h3>
-              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-sm text-text-secondary">
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
                 <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-text-muted">business</span>
+                  <span className="material-symbols-outlined text-[16px]" style={{ color: "var(--color-ink-muted-48)" }}>business</span>
                   {entrepriseNom}
                 </span>
                 {localisation && (
                   <span className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px] text-text-muted">location_on</span>
+                    <span className="material-symbols-outlined text-[16px]" style={{ color: "var(--color-ink-muted-48)" }}>location_on</span>
                     {localisation}
                   </span>
                 )}
@@ -131,15 +151,15 @@ export default function CandidatureCard({ candidature, onAnnuler, onOpenDetails 
 
             {/* Badge étape */}
             <span
-              className={`shrink-0 rounded-full px-3 py-1 font-body text-xs font-semibold ${etapeInfo.color}`}
+              className={`shrink-0 ${etapeInfo.color}`}
             >
               {etapeInfo.label}
             </span>
           </div>
 
           {/* Footer */}
-          <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-            <div className="flex items-center gap-4 font-body text-xs text-text-muted">
+          <div className="mt-3 flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--color-divider-soft)" }}>
+            <div className="flex items-center gap-4 font-text text-[12px]" style={{ color: "var(--color-ink-muted-48)" }}>
               {dateSoumission && (
                 <span className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[14px]">calendar_today</span>
@@ -161,7 +181,8 @@ export default function CandidatureCard({ candidature, onAnnuler, onOpenDetails 
                   e.stopPropagation();
                   onAnnuler(candidature._id);
                 }}
-                className="rounded-lg px-3 py-1.5 font-body text-xs font-semibold text-red-500 transition-colors hover:bg-red-50"
+                className="button-ghost-pill"
+                style={{ fontSize: "14px", padding: "8px 14px", color: "#ff3b30", borderColor: "rgba(255,59,48,0.3)" }}
               >
                 Annuler
               </button>

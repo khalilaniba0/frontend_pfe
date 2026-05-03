@@ -81,21 +81,25 @@ export default function Navbar() {
 
   return (
     <nav
-      className={
-        "fixed left-0 right-0 top-0 z-50 px-6 py-4 transition-all duration-300 md:px-8 " +
-        (scrolled
-          ? "border-b border-primary/15 bg-white/95 shadow-sm backdrop-blur-xl"
-          : "bg-transparent")
-      }
+      className="fixed left-0 right-0 top-0 z-50 transition-all duration-300"
+      style={{
+        height: "44px",
+        backgroundColor: "#ffffff",
+        fontFamily: "var(--font-text)",
+        borderBottom: "1px solid var(--color-hairline)",
+      }}
     >
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between">
-        <BrandLogo to={ROUTES.LANDING} />
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6 md:px-8">
+        <BrandLogo to={ROUTES.LANDING} variant="light" />
 
         <div className="hidden items-center gap-8 md:flex">
           {isCandidateMenu ? (
             <Link
               to={ROUTES.LANDING}
-              className="font-body text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-primary"
+              className="font-text text-[14px] font-normal no-underline transition-colors duration-150"
+              style={{ color: "var(--color-body-muted)", letterSpacing: "-0.224px" }}
+              onMouseEnter={function (e) { e.target.style.color = "var(--color-primary)"; }}
+              onMouseLeave={function (e) { e.target.style.color = "var(--color-body-muted)"; }}
             >
               Espace Entreprise
             </Link>
@@ -103,16 +107,22 @@ export default function Navbar() {
             <>
               <Link
                 to={ROUTES.CANDIDATE_OFFRES}
-                className="font-body text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-primary"
+                className="font-text text-[14px] font-normal no-underline transition-colors duration-150"
+                style={{ color: "var(--color-body-muted)", letterSpacing: "-0.224px" }}
+                onMouseEnter={function (e) { e.target.style.color = "var(--color-primary)"; }}
+                onMouseLeave={function (e) { e.target.style.color = "var(--color-body-muted)"; }}
               >
-                offres d'emploi
+                Offres d'emploi
               </Link>
               {navLinks.map(function (item) {
                 return (
                   <a
                     key={item.label}
                     href={item.href}
-                    className="font-body text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-primary"
+                    className="font-text text-[14px] font-normal no-underline transition-colors duration-150"
+                    style={{ color: "var(--color-body-muted)", letterSpacing: "-0.224px" }}
+                    onMouseEnter={function (e) { e.target.style.color = "var(--color-primary)"; }}
+                    onMouseLeave={function (e) { e.target.style.color = "var(--color-body-muted)"; }}
                   >
                     {item.label}
                   </a>
@@ -125,44 +135,52 @@ export default function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {isAuthenticatedForCurrentMenu ? (
             <>
-              <span className="max-w-[200px] truncate rounded-xl border border-border bg-white px-4 py-2.5 font-body text-sm font-medium text-text-primary">
+              <span
+                className="max-w-[200px] truncate font-text text-[14px] font-normal"
+                style={{ color: "var(--color-body-muted)" }}
+              >
                 {displayName}
               </span>
-              <Link
-                to={dashboardRoute}
-                className="rounded-xl bg-gradient-to-r from-[#00D2FF] to-[#3a7bd5] px-5 py-2.5 font-body text-sm font-semibold text-white no-underline shadow-md shadow-primary/30 transition-all duration-150 hover:shadow-lg"
-              >
+              <Link to={dashboardRoute} className="button-dark-utility no-underline">
                 Dashboard
               </Link>
             </>
           ) : (
             <>
-              <Link
-                to={loginRoute}
-                className="rounded-xl border border-border bg-white px-5 py-2.5 font-body text-sm font-medium text-text-primary no-underline transition-all duration-150 hover:border-primary hover:text-primary"
+              <Link 
+                to={loginRoute} 
+                className="button-secondary-navbar no-underline"
               >
                 Se connecter
               </Link>
-              <Link
-                to={signupRoute}
-                className="rounded-xl bg-gradient-to-r from-[#00D2FF] to-[#3a7bd5] px-5 py-2.5 font-body text-sm font-semibold text-white no-underline shadow-md shadow-primary/30 transition-all duration-150 hover:shadow-lg"
+              <Link 
+                to={signupRoute} 
+                className="button-primary no-underline"
+                style={{
+                  padding: "8px 18px",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  borderRadius: "9999px",
+                }}
               >
-                S'inscrire gratuitement
+                S'inscrire
               </Link>
             </>
           )}
         </div>
 
+        {/* Mobile hamburger */}
         <button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary transition-colors hover:bg-bg-soft md:hidden"
+          className="flex h-[44px] w-[44px] items-center justify-center border-none bg-transparent transition-colors md:hidden"
+          style={{ color: "var(--color-body-muted)" }}
           onClick={function () {
             setMenuOpen(!menuOpen);
           }}
         >
           <svg
-            width="22"
-            height="22"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -184,15 +202,21 @@ export default function Navbar() {
         </button>
       </div>
 
+      {/* Mobile menu */}
       {menuOpen && (
-        <div className="flex flex-col gap-4 border-t border-primary/10 bg-white/98 px-6 py-6 shadow-lg backdrop-blur-xl md:hidden">
+        <div
+          className="flex flex-col gap-4 px-6 py-6 md:hidden"
+          style={{
+            backgroundColor: "#ffffff",
+            borderTop: "1px solid var(--color-hairline)",
+          }}
+        >
           {isCandidateMenu ? (
             <Link
               to={ROUTES.LANDING}
-              onClick={function () {
-                setMenuOpen(false);
-              }}
-              className="font-body text-base text-text-secondary transition-colors hover:text-primary"
+              onClick={function () { setMenuOpen(false); }}
+              className="font-text text-[14px] no-underline"
+              style={{ color: "var(--color-body-muted)" }}
             >
               Espace Entreprise
             </Link>
@@ -200,22 +224,20 @@ export default function Navbar() {
             <>
               <Link
                 to={ROUTES.CANDIDATE_OFFRES}
-                onClick={function () {
-                  setMenuOpen(false);
-                }}
-                className="font-body text-base text-text-secondary transition-colors hover:text-primary"
+                onClick={function () { setMenuOpen(false); }}
+                className="font-text text-[14px] no-underline"
+                style={{ color: "var(--color-body-muted)" }}
               >
-                Trouver un job
+                Offres d'emploi
               </Link>
               {navLinks.map(function (item) {
                 return (
                   <a
                     key={item.label}
                     href={item.href}
-                    onClick={function () {
-                      setMenuOpen(false);
-                    }}
-                    className="font-body text-base text-text-secondary transition-colors hover:text-primary"
+                    onClick={function () { setMenuOpen(false); }}
+                    className="font-text text-[14px] no-underline"
+                    style={{ color: "var(--color-body-muted)" }}
                   >
                     {item.label}
                   </a>
@@ -225,15 +247,16 @@ export default function Navbar() {
           )}
           {isAuthenticatedForCurrentMenu ? (
             <>
-              <span className="rounded-xl border border-border bg-white px-4 py-3 text-center font-body text-sm font-medium text-text-primary">
+              <span
+                className="font-text text-[14px]"
+                style={{ color: "var(--color-body-muted)" }}
+              >
                 {displayName}
               </span>
               <Link
                 to={dashboardRoute}
-                onClick={function () {
-                  setMenuOpen(false);
-                }}
-                className="rounded-xl bg-gradient-to-r from-[#00D2FF] to-[#3a7bd5] py-3 text-center font-body text-sm font-semibold text-white no-underline shadow-md"
+                onClick={function () { setMenuOpen(false); }}
+                className="button-dark-utility no-underline text-center"
               >
                 Dashboard
               </Link>
@@ -242,21 +265,18 @@ export default function Navbar() {
             <>
               <Link
                 to={loginRoute}
-                onClick={function () {
-                  setMenuOpen(false);
-                }}
+                onClick={function () { setMenuOpen(false); }}
                 className="rounded-xl border border-border bg-white px-5 py-3 text-center font-body text-sm font-medium text-text-primary no-underline transition-all hover:border-primary hover:text-primary"
               >
                 Se connecter
               </Link>
               <Link
                 to={signupRoute}
-                onClick={function () {
-                  setMenuOpen(false);
-                }}
-                className="rounded-xl bg-gradient-to-r from-[#00D2FF] to-[#3a7bd5] py-3 text-center font-body text-sm font-semibold text-white no-underline shadow-md"
+                onClick={function () { setMenuOpen(false); }}
+                className="button-dark-utility no-underline text-center"
+                style={{ background: "var(--color-primary)", color: "#ffffff" }}
               >
-                S'inscrire gratuitement
+                S'inscrire
               </Link>
             </>
           )}

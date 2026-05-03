@@ -7,50 +7,43 @@ function getEtapeConfig(etape) {
       return {
         text: "Candidature soumise",
         icon: "fas fa-user-plus",
-        iconBg: "bg-indigo-50",
-        iconColor: "text-indigo-500",
+        dotColor: "var(--color-primary)",
       };
     case "preselectionne":
       return {
         text: "Présélectionné(e)",
         icon: "fas fa-check-circle",
-        iconBg: "bg-secondary-light",
-        iconColor: "text-secondary",
+        dotColor: "#1d6b1d",
       };
     case "entretien_planifie":
       return {
         text: "Entretien planifié",
         icon: "fas fa-calendar-check",
-        iconBg: "bg-orange-50",
-        iconColor: "text-orange-500",
+        dotColor: "#7a5c00",
       };
     case "entretien_passe":
       return {
         text: "Entretien passé",
         icon: "fas fa-check-circle",
-        iconBg: "bg-primary-light",
-        iconColor: "text-primary",
+        dotColor: "var(--color-primary)",
       };
     case "accepte":
       return {
         text: "Candidature acceptée",
         icon: "fas fa-plus-circle",
-        iconBg: "bg-secondary-light",
-        iconColor: "text-secondary",
+        dotColor: "#1d6b1d",
       };
     case "refuse":
       return {
         text: "Candidature refusée",
         icon: "fas fa-times-circle",
-        iconBg: "bg-red-50",
-        iconColor: "text-red-500",
+        dotColor: "#ff3b30",
       };
     default:
       return {
         text: "Mise à jour",
         icon: "fas fa-info-circle",
-        iconBg: "bg-gray-50",
-        iconColor: "text-gray-500",
+        dotColor: "var(--color-ink-muted-48)",
       };
   }
 }
@@ -61,17 +54,32 @@ function timeAgo(dateStr) {
   var date = new Date(dateStr);
   var diff = Math.floor((now - date) / 1000);
 
-  if (diff < 60) return "Il y a quelques secondes";
-  if (diff < 3600) return "Il y a " + Math.floor(diff / 60) + " min";
-  if (diff < 86400) return "Il y a " + Math.floor(diff / 3600) + "h";
-  if (diff < 604800) return "Il y a " + Math.floor(diff / 86400) + " jour(s)";
+  if (diff < 60) return "À l'instant";
+  if (diff < 3600) return Math.floor(diff / 60) + " min";
+  if (diff < 86400) return Math.floor(diff / 3600) + "h";
   return date.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+}
+
+function isToday(dateStr) {
+  if (!dateStr) return false;
+  var today = new Date();
+  var date = new Date(dateStr);
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
 }
 
 export default function RecentActivity({ candidatures, loading }) {
   const activities = useMemo(
     function () {
-      return (Array.isArray(candidatures) ? candidatures : []).map(function (c) {
+      return (Array.isArray(candidatures) ? candidatures : [])
+        .filter(function (c) {
+          // Ne conserver que les événements du jour
+          return isToday(c.createdAt);
+        })
+        .map(function (c) {
         var config = getEtapeConfig(c.etape);
         var person = c.nom || c.candidat?.nom || c.email || "Candidat";
         var offrePoste = c.offre?.poste || "";
@@ -80,8 +88,7 @@ export default function RecentActivity({ candidatures, loading }) {
           person: person,
           time: timeAgo(c.createdAt),
           icon: config.icon,
-          iconBg: config.iconBg,
-          iconColor: config.iconColor,
+          dotColor: config.dotColor,
         };
       });
     },
@@ -89,57 +96,70 @@ export default function RecentActivity({ candidatures, loading }) {
   );
 
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-border bg-white p-5 shadow-sm">
-      <header className="mb-4 flex items-center justify-between">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-text-primary">
-          Activité récente
-        </h3>
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 font-body text-xs font-semibold text-primary">
+    <div className="apple-card flex h-full min-h-[380px] flex-col">
+      <header className="mb-6 flex items-start justify-between">
+        <div>
+          <h3
+            className="font-text text-[17px] font-semibold"
+            style={{ color: "var(--color-ink)", letterSpacing: "-0.374px" }}
+          >
+            Tâches & Activités du jour
+          </h3>
+          <p className="mt-1 font-text text-[14px] font-normal" style={{ color: "var(--color-ink-muted-48)" }}>
+            Aperçu de vos événements récents et tâches.
+          </p>
+        </div>
+        <span className="badge-count">
           {activities.length}
         </span>
       </header>
 
-      <div className="relative flex flex-1 flex-col">
-        <div className="absolute bottom-4 left-4 top-4 w-px bg-border"></div>
-
+      <div className="relative flex flex-1 flex-col overflow-y-auto pr-1">
         {loading ? (
           <div className="flex flex-1 items-center justify-center">
-            <p className="font-body text-sm text-text-muted">Chargement...</p>
+            <div className="h-6 w-6 animate-spin rounded-full" style={{ border: "2px solid var(--color-hairline)", borderTopColor: "var(--color-primary)" }} />
           </div>
         ) : activities.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center">
-            <p className="font-body text-sm text-text-muted">
-              Aucune activité récente
+          <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+            <div
+              className="flex h-14 w-14 items-center justify-center rounded-[var(--rounded-pill)]"
+              style={{ backgroundColor: "var(--color-canvas-parchment)", color: "var(--color-ink-muted-48)" }}
+            >
+              <i className="fas fa-inbox text-2xl" />
+            </div>
+            <p className="font-text text-[14px] font-normal" style={{ color: "var(--color-ink-muted-48)" }}>
+              Aucune activité pour aujourd'hui
             </p>
           </div>
         ) : (
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col pb-2">
             {activities.map(function (item, index) {
               return (
                 <li
                   key={index}
-                  className="group relative flex cursor-default items-start gap-3 rounded-lg p-1 pl-0 transition-colors duration-150 hover:bg-bg-soft"
+                  className="flex cursor-default flex-col py-3"
+                  style={{
+                    borderBottom: index < activities.length - 1 ? "1px solid var(--color-divider-soft)" : "none",
+                  }}
                 >
-                  <div
-                    className={
-                      "relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-transform duration-150 group-hover:scale-105 " +
-                      item.iconBg +
-                      " " +
-                      item.iconColor
-                    }
-                  >
-                    <i className={item.icon + " text-xs"}></i>
-                  </div>
-                  <div className="min-w-0 flex-1 pt-0.5">
-                    <p className="font-body text-sm leading-snug text-text-secondary">
-                      <span className="font-semibold text-text-primary">
-                        {item.person}
-                      </span>{" "}
-                      {item.text}
-                    </p>
-                    <p className="mt-1 font-body text-xs text-text-muted">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className="flex h-2 w-2 flex-shrink-0 rounded-[var(--rounded-pill)]"
+                        style={{ backgroundColor: item.dotColor }}
+                      />
+                      <div className="min-w-0">
+                        <p className="font-text text-[17px] font-semibold line-clamp-1" style={{ color: "var(--color-ink)", letterSpacing: "-0.374px" }}>
+                          {item.person}
+                        </p>
+                        <p className="font-text text-[14px] font-normal line-clamp-1 mt-0.5" style={{ color: "var(--color-ink-muted-48)" }}>
+                          {item.text}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="badge-count shrink-0 whitespace-nowrap">
                       {item.time}
-                    </p>
+                    </span>
                   </div>
                 </li>
               );
@@ -147,16 +167,6 @@ export default function RecentActivity({ candidatures, loading }) {
           </ul>
         )}
       </div>
-
-      <footer className="mt-4 border-t border-border pt-4">
-        <button
-          type="button"
-          className="flex w-full items-center justify-center gap-2 rounded-lg py-2 font-body text-sm font-medium text-primary transition-colors duration-150 hover:bg-primary-light"
-        >
-          Voir toute l'activité
-          <i className="fas fa-arrow-right text-xs"></i>
-        </button>
-      </footer>
     </div>
   );
 }

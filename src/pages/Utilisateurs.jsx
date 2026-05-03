@@ -35,7 +35,7 @@ export default function Users() {
       <div className="animate-fade-in">
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+            <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
               Gestion des utilisateurs
             </h1>
           </div>
@@ -44,7 +44,7 @@ export default function Users() {
             onClick={function () {
               setShowModal(true);
             }}
-            className="flex flex-shrink-0 items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all duration-150 hover:bg-primary-dark hover:shadow-lg"
+            className="button-primary"
           >
             <span className="material-symbols-outlined text-base">
               person_add
@@ -54,15 +54,15 @@ export default function Users() {
         </header>
 
         {showSuccess && (
-          <div className="mb-5 flex animate-slide-up items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
-            <span className="material-symbols-outlined flex-shrink-0 text-xl text-emerald-600">
+          <div className="mb-5 flex animate-slide-up items-center gap-3 rounded-[var(--rounded-sm)] px-4 py-3" style={{ backgroundColor: '#e8f4e8', border: '1px solid #c2e0c2' }}>
+            <span className="material-symbols-outlined flex-shrink-0 text-xl" style={{ color: '#1d6b1d' }}>
               check_circle
             </span>
             <div className="flex-1">
-              <p className="font-body text-sm font-semibold text-emerald-800">
+              <p className="font-text text-[14px] font-semibold" style={{ color: '#1d6b1d' }}>
                 Compte créé avec succès
               </p>
-              <p className="font-body text-xs text-emerald-700">
+              <p className="font-text text-[12px]" style={{ color: '#1d6b1d' }}>
                 {lastCreated} peut maintenant se connecter à la plateforme.
               </p>
             </div>
@@ -71,7 +71,8 @@ export default function Users() {
               onClick={function () {
                 setShowSuccess(false);
               }}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-500 transition-colors hover:bg-emerald-100 hover:text-emerald-700"
+              className="button-icon-circular"
+              style={{ width: '32px', height: '32px', background: 'transparent' }}
             >
               <span className="material-symbols-outlined text-lg">close</span>
             </button>

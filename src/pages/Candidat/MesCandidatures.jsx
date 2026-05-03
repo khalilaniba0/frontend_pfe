@@ -3,8 +3,6 @@ import { Search } from "lucide-react";
 import CandidatureCard from "components/Candidat/CandidatureCard";
 import CandidatureDetailsModal from "components/Candidat/ModalDetailsCandidature";
 import { getMesCandidatures, annulerCandidature } from "service/restApiCandidature";
-import Toast from "components/commun/NotificationToast";
-import { useToast } from "hooks/useNotificationsToast";
 
 const ETAPE_OPTIONS = [
   { value: "", label: "Toutes les étapes" },
@@ -43,7 +41,6 @@ export default function MesCandidatures() {
   const [filterEtape, setFilterEtape] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCandidature, setSelectedCandidature] = useState(null);
-  const { toast, showToast, hideToast } = useToast();
 
   async function fetchCandidatures() {
     try {
@@ -82,10 +79,9 @@ export default function MesCandidatures() {
         });
       });
     } catch (err) {
-      showToast(
+      setError(
         err?.response?.data?.message ||
-          "Impossible d'annuler cette candidature.",
-        "error"
+          "Impossible d'annuler cette candidature."
       );
     }
   }
@@ -122,9 +118,21 @@ export default function MesCandidatures() {
   });
 
   return (
-    <div className="mx-auto max-w-7xl animate-fade-in space-y-6 p-4 md:p-8">
+    <div
+      className="mx-auto max-w-7xl animate-fade-in space-y-6 p-4 md:p-8"
+      style={{ backgroundColor: "var(--color-canvas-parchment)" }}
+    >
       <section>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-text-primary md:text-3xl">
+        <h1
+          className="font-display"
+          style={{
+            fontSize: "34px",
+            fontWeight: 600,
+            lineHeight: 1.47,
+            letterSpacing: "-0.374px",
+            color: "var(--color-ink)",
+          }}
+        >
           Mes candidatures
         </h1>
       </section>
@@ -137,27 +145,26 @@ export default function MesCandidatures() {
             event.preventDefault();
           }}
         >
-          <div className="relative rounded-xl border border-gray-200 bg-white p-1.5 shadow-sm">
+          <div
+            className="relative rounded-[var(--rounded-lg)] p-1.5"
+            style={{ border: "1px solid var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}
+          >
             <Search
               size={18}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2"
+              style={{ color: "var(--color-ink-muted-48)" }}
             />
             <input
-              type="text"
+              type="search"
               value={searchTerm}
               onChange={function (event) {
                 setSearchTerm(event.target.value);
               }}
               placeholder="Nom du poste ou entreprise"
-              className="w-full rounded-lg border-none py-2.5 pl-10 pr-32 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-0"
+              className="apple-search"
+              style={{ paddingLeft: "40px", paddingRight: "150px" }}
             />
 
-            <button
-              type="submit"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-teal-600"
-            >
-              Rechercher
-            </button>
           </div>
         </form>
 
@@ -168,7 +175,8 @@ export default function MesCandidatures() {
             onChange={function (e) {
               setFilterEtape(e.target.value);
             }}
-            className="rounded-xl border border-border bg-white px-3 py-2 font-body text-sm text-text-primary transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="apple-select rounded-xl border border-border bg-white shadow-sm"
+            style={{ width: "260px", height: "44px", appearance: "none", WebkitAppearance: "none", MozAppearance: "none" }}
           >
             {ETAPE_OPTIONS.map(function (opt) {
               return (
@@ -183,7 +191,7 @@ export default function MesCandidatures() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="apple-card px-4 py-3" style={{ borderColor: "#ff3b30", color: "#ff3b30" }}>
           {error}
         </div>
       )}
@@ -201,14 +209,14 @@ export default function MesCandidatures() {
           })}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-white px-6 py-16 text-center shadow-sm">
-          <span className="material-symbols-outlined mx-auto mb-3 text-4xl text-text-muted">inbox</span>
-          <p className="font-display text-lg font-bold text-text-primary">
+        <div className="apple-card px-6 py-16 text-center">
+          <span className="material-symbols-outlined mx-auto mb-3 text-4xl" style={{ color: "var(--color-ink-muted-48)" }}>inbox</span>
+          <p className="font-display text-[21px]" style={{ color: "var(--color-ink)", fontWeight: 600 }}>
             {filterEtape
               ? "Aucune candidature pour cette étape"
               : "Vous n'avez pas encore postulé"}
           </p>
-          <p className="mt-1 font-body text-sm text-text-secondary">
+          <p className="mt-1 font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
             Explorez nos offres et commencez à postuler !
           </p>
         </div>
@@ -234,9 +242,6 @@ export default function MesCandidatures() {
         />
       )}
 
-      {toast && (
-        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
-      )}
     </div>
   );
 }

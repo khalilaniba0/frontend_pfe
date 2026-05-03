@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import ModalBackdrop from "../commun/FondModal";
-import Toast from "components/commun/NotificationToast";
-import { useToast } from "hooks/useNotificationsToast";
 
 const EMPTY_FORM = {
   candidatEmail: "",
@@ -24,7 +22,6 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const { toast, showToast, hideToast } = useToast();
 
   const getTodayDateInputValue = function () {
     const now = new Date();
@@ -96,12 +93,6 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
-      if (errs.date || errs.heureDebut) {
-        showToast(
-          "Impossible de programmer un entretien dans une date ou une heure passee.",
-          "error"
-        );
-      }
       return;
     }
 
@@ -134,17 +125,8 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
       };
 
       const response = await onSubmit(payload);
-      if (response?.data?.googleWarning) {
-        showToast(
-          "Entretien créé mais non synchronisé avec Google Calendar. Connectez votre compte Google dans Paramètres > Intégrations.",
-          "warning"
-        );
-      }
     } catch (err) {
-      showToast(
-        err?.response?.data?.message || "Erreur lors de la soumission",
-        "error"
-      );
+      console.error("Interview submit failed:", err);
     } finally {
       setSubmitting(false);
     }
@@ -166,7 +148,7 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
   return (
     <>
       <ModalBackdrop>
-        <div className="flex max-h-[95vh] w-full animate-scale-in flex-col overflow-y-auto rounded-t-2xl border border-border bg-white shadow-2xl md:mx-4 md:max-w-2xl md:rounded-2xl">
+        <div className="flex max-h-[95vh] w-full animate-scale-in flex-col overflow-y-auto rounded-t-2xl border border-border bg-white md:mx-4 md:max-w-2xl md:rounded-2xl">
         <div className="flex flex-shrink-0 items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-light">
@@ -202,7 +184,7 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
             </span>
             <p className="font-body text-xs leading-relaxed text-text-secondary">
               L'entretien sera automatiquement ajouté au calendrier et le
-              candidat recevra une notification par email.
+              candidat recevra un email.
             </p>
           </div>
 
@@ -393,7 +375,7 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
               type="submit"
               disabled={submitting}
               onClick={handleSubmit}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all duration-150 hover:bg-primary-dark hover:shadow-lg disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-body text-sm font-semibold text-white transition-all duration-150 hover:bg-primary-dark disabled:opacity-60"
             >
               {submitting ? (
                 <>
@@ -415,10 +397,6 @@ export default function CreateInterviewModal({ onClose, onSubmit }) {
         </div>
         </div>
       </ModalBackdrop>
-
-      {toast && (
-        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
-      )}
     </>
   );
 }

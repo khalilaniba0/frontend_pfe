@@ -8,12 +8,12 @@ import StatCard from "components/TableauDeBord/CarteStatistique";
 import OffreRecommendationCard from "components/Candidat/CarteRecommandationOffre";
 
 const ETAPE_CONFIG = {
-  soumise: { label: "Candidature reçue", cls: "bg-gray-100 text-gray-600" },
-  preselectionne: { label: "En cours d'examen", cls: "bg-blue-100 text-blue-700" },
-  entretien_planifie: { label: "Entretien prévu", cls: "bg-amber-50 text-amber-600" },
-  entretien_passe: { label: "Entretien passé", cls: "bg-purple-100 text-purple-700" },
-  accepte: { label: "Accepté", cls: "bg-emerald-50 text-emerald-600" },
-  refuse: { label: "Refusé", cls: "bg-red-50 text-red-600" },
+  soumise: { label: "Candidature reçue", cls: "bg-gray-50 text-gray-600" },
+  preselectionne: { label: "En cours d'examen", cls: "bg-gray-50 text-gray-600" },
+  entretien_planifie: { label: "Entretien prévu", cls: "bg-gray-50 text-gray-600" },
+  entretien_passe: { label: "Entretien passé", cls: "bg-gray-50 text-gray-600" },
+  accepte: { label: "Accepté", cls: "bg-gray-50 text-gray-600" },
+  refuse: { label: "Refusé", cls: "bg-gray-50 text-gray-600" },
 };
 
 const TYPE_ENTRETIEN_LABELS = {
@@ -174,31 +174,31 @@ export default function CandidateDashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-        <div onClick={() => navigate("/candidat/mes-candidatures")} className="cursor-pointer">
+        <div onClick={() => navigate("/candidat/mes-candidatures")} className="cursor-pointer transition-transform hover:-translate-y-1">
           <StatCard
             label="Candidatures"
             value={candidatures.length}
             icon="work"
             subLabel="Envoyées au total"
-            color="primary"
+            color="neutral"
           />
         </div>
-        <div onClick={() => navigate("/candidat/entretiens")} className="cursor-pointer">
+        <div onClick={() => navigate("/candidat/entretiens")} className="cursor-pointer transition-transform hover:-translate-y-1">
           <StatCard
             label="Entretiens"
             value={entretiensPreus}
             icon="event"
             subLabel="Prévus prochainement"
-            color="warning"
+            color="neutral"
           />
         </div>
-        <div onClick={() => navigate("/candidat/mes-candidatures")} className="cursor-pointer">
+        <div onClick={() => navigate("/candidat/mes-candidatures")} className="cursor-pointer transition-transform hover:-translate-y-1">
           <StatCard
             label="Acceptées"
             value={candidatures.filter((c) => c.etape === "accepte").length}
             icon="check_circle"
             subLabel="Candidatures acceptées"
-            color="secondary"
+            color="neutral"
           />
         </div>
       </div>
@@ -234,7 +234,7 @@ export default function CandidateDashboard() {
                     className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 text-gray-500 border border-gray-100">
                         <span className="material-symbols-outlined text-xl">event</span>
                       </div>
                       <div>
@@ -259,13 +259,14 @@ export default function CandidateDashboard() {
                         href={interview.meetLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-white transition-all hover:bg-primary-dark"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-white transition-all hover:bg-opacity-90"
+                        style={{ backgroundColor: "var(--color-primary)" }}
                       >
                         <span className="material-symbols-outlined text-[18px]">videocam</span>
                         Rejoindre Meet
                       </a>
                     ) : (
-                      <span className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
+                      <span className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600" style={{ borderColor: "var(--color-hairline)", backgroundColor: "#fafafc", color: "var(--color-body-muted)" }}>
                         <span className="material-symbols-outlined text-[16px]">schedule</span>
                         Lien Meet à venir
                       </span>
@@ -324,7 +325,7 @@ export default function CandidateDashboard() {
                     className="flex flex-col gap-3 p-4 transition-colors hover:bg-bg-soft sm:flex-row sm:items-center sm:justify-between sm:p-5"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary">
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 text-gray-500 border border-gray-100">
                         <span className="material-symbols-outlined text-xl">work</span>
                       </div>
                       <div>
@@ -337,7 +338,7 @@ export default function CandidateDashboard() {
                       </div>
                     </div>
                     <span
-                      className={`font-body text-xs font-semibold px-3 py-1 rounded-full ${etape.cls}`}
+                      className={`font-body text-xs font-semibold px-3 py-1 rounded-full border border-gray-200 ${etape.cls}`}
                     >
                       {etape.label}
                     </span>

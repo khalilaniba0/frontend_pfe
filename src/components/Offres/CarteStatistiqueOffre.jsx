@@ -7,49 +7,41 @@ export default function JobStatCard({
   value,
   badge = null,
   badgeLabel = "",
-  iconBg = "bg-primary-light",
-  iconColor = "text-primary",
+  iconBg,
+  iconColor,
   trend = "neutral",
 }) {
   return (
-    <div className="group relative flex h-36 flex-col justify-between overflow-hidden rounded-2xl border border-border bg-white p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md">
+    <div className="apple-card card-animate flex h-36 flex-col justify-between">
       <div className="flex items-start justify-between">
         <div
-          className={
-            "flex h-11 w-11 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105 " +
-            iconBg
-          }
+          className="flex h-11 w-11 items-center justify-center rounded-[var(--rounded-sm)]"
+          style={{
+            backgroundColor: "var(--color-canvas-parchment)",
+            color: "var(--color-primary)",
+          }}
         >
-          <span className={"material-symbols-outlined text-xl " + iconColor}>
-            {icon}
-          </span>
+          <span className="material-symbols-outlined text-xl">{icon}</span>
         </div>
         {badge && (
           <div className="flex items-center gap-1.5">
-            {trend === "up" && (
-              <span className="material-symbols-outlined text-sm text-emerald-500">
-                trending_up
-              </span>
-            )}
             <span
-              className={
-                "font-body text-xs font-semibold tabular-nums " +
-                (trend === "up" ? "text-emerald-600" : "text-text-secondary")
-              }
+              className="font-text text-[12px] font-semibold tabular-nums"
+              style={{ color: "var(--color-ink-muted-48)" }}
             >
               {badge}
             </span>
-            {badgeLabel && (
-              <span className="font-body text-xs text-text-muted">
-                {badgeLabel}
-              </span>
-            )}
           </div>
         )}
       </div>
       <div>
-        <p className="font-body text-sm text-text-secondary">{label}</p>
-        <h3 className="mt-0.5 font-display text-2xl font-bold tabular-nums tracking-tight text-text-primary">
+        <p className="font-text text-[14px] font-normal" style={{ color: "var(--color-ink-muted-48)" }}>
+          {label}
+        </p>
+        <h3
+          className="mt-0.5 font-display tabular-nums"
+          style={{ fontSize: "40px", fontWeight: 600, color: "var(--color-ink)" }}
+        >
           {value}
         </h3>
       </div>

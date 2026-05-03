@@ -7,8 +7,6 @@ import InterviewCalendar from "components/Entretiens/CalendrierEntretiens";
 import EntretiensEnLigneTab from "components/Entretiens/EntretiensEnLigneTab";
 import CreateInterviewModal from "components/Entretiens/ModalCreationEntretien";
 import InterviewDetailsModal from "components/Entretiens/ModalDetailsEntretien";
-import Toast from "components/commun/NotificationToast";
-import { useToast } from "hooks/useNotificationsToast";
 import { useInterviews } from "hooks/useEntretiens";
 import { useAuth } from "context/ContexteAuth";
 import { connectGoogleCalendar, getEntretienById } from "service/restApiEntretiens";
@@ -168,7 +166,6 @@ export default function Interviews() {
     removeInterview,
     refetch,
   } = useInterviews();
-  const { toast, showToast, hideToast } = useToast();
 
   useEffect(
     function () {
@@ -191,7 +188,6 @@ export default function Interviews() {
 
         if (connectedFromQuery && isMounted) {
           setIsGoogleConnected(true);
-          showToast("Google Calendar connecté avec succès", "success");
         }
 
         if (connectedFromStoredUser && isMounted) {
@@ -236,7 +232,7 @@ export default function Interviews() {
         isMounted = false;
       };
     },
-    [isRhUser, location.search, showToast, user?._id, user?.googleTokens],
+    [isRhUser, location.search, user?._id, user?.googleTokens],
   );
 
   const candidatureEtapesById = useMemo(function () {
@@ -301,10 +297,6 @@ export default function Interviews() {
     try {
       const normalizedRole = String(user?.role || "").toLowerCase();
       if (normalizedRole !== "admin" && normalizedRole !== "rh") {
-        showToast(
-          "Seuls les admins et les RH peuvent programmer un entretien.",
-          "error"
-        );
         return null;
       }
 
@@ -332,15 +324,10 @@ export default function Interviews() {
       }
 
       if (!interviewDate || isNaN(interviewDate.getTime())) {
-        showToast("Date d'entretien invalide.", "error");
         return null;
       }
 
       if (interviewDate.getTime() < Date.now()) {
-        showToast(
-          "Impossible de programmer un entretien dans le passe.",
-          "error"
-        );
         return null;
       }
 
@@ -376,22 +363,9 @@ export default function Interviews() {
       const response = await addInterview(finalPayload);
       setShowModal(false);
 
-      if (response?.data?.googleWarning) {
-        showToast(
-          "Entretien créé mais non synchronisé avec Google Calendar. Connectez votre compte Google dans Paramètres > Intégrations.",
-          "warning"
-        );
-      } else {
-        showToast("Entretien programme avec succes.", "success");
-      }
-
       return response;
     } catch (err) {
-      showToast(
-        err?.response?.data?.message ||
-          "Erreur lors de la création de l'entretien",
-        "error"
-      );
+      console.error("Interview creation failed:", err);
     }
   };
 
@@ -399,7 +373,6 @@ export default function Interviews() {
     const id = selectedInterview?._id || selectedInterview?.id;
 
     if (!id) {
-      showToast("Impossible de supprimer cet entretien.", "error");
       return;
     }
 
@@ -407,13 +380,8 @@ export default function Interviews() {
       setDeletingInterview(true);
       await removeInterview(id);
       setSelectedInterview(null);
-      showToast("Entretien supprimé avec succès.", "success");
     } catch (err) {
-      showToast(
-        err?.response?.data?.message ||
-          "Erreur lors de la suppression de l'entretien",
-        "error"
-      );
+      console.error("Interview deletion failed:", err);
     } finally {
       setDeletingInterview(false);
     }
@@ -498,12 +466,9 @@ export default function Interviews() {
       <div className="animate-fade-in">
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+            <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
               Centre de planification
             </h1>
-            <p className="mt-1 font-body text-sm text-text-secondary">
-              Gérez et planifiez vos entretiens de recrutement
-            </p>
           </div>
 
           <button
@@ -511,7 +476,7 @@ export default function Interviews() {
             onClick={function () {
               setShowModal(true);
             }}
-            className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all duration-150 hover:bg-primary-dark hover:shadow-lg"
+            className="button-primary"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Programmer un entretien
@@ -519,17 +484,17 @@ export default function Interviews() {
         </header>
 
         {isRhUser && (
-          <div className="mb-5 rounded-xl border border-border bg-white px-4 py-3 shadow-sm">
+          <div className="mb-5 rounded-[var(--rounded-lg)] bg-white px-4 py-3 shadow-sm" style={{ border: '1px solid var(--color-hairline)' }}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <div className="flex h-10 w-10 items-center justify-center rounded-[var(--rounded-sm)]" style={{ backgroundColor: 'var(--color-canvas-parchment)', color: 'var(--color-primary)' }}>
                   <span className="material-symbols-outlined text-xl">calendar_month</span>
                 </div>
                 <div>
-                  <p className="font-body text-sm font-semibold text-text-primary">
+                  <p className="font-text text-[14px] font-semibold" style={{ color: 'var(--color-ink)' }}>
                     Synchronisation Google Calendar
                   </p>
-                  <p className="font-body text-xs text-text-muted">
+                  <p className="font-text text-[12px]" style={{ color: 'var(--color-ink-muted-48)' }}>
                     Reliez votre compte Google pour créer et mettre à jour les liens Meet automatiquement.
                   </p>
                 </div>
@@ -557,7 +522,8 @@ export default function Interviews() {
                   type="button"
                   onClick={handleGoogleConnect}
                   disabled={isCheckingGoogleConnection}
-                  className="rounded-lg bg-primary px-3 py-2 font-body text-xs font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
+                  className="button-primary"
+                  style={{ padding: '8px 16px', fontSize: '12px' }}
                 >
                   {isGoogleConnected ? "Reconnecter Google" : "Connecter Google"}
                 </button>
@@ -567,24 +533,25 @@ export default function Interviews() {
         )}
 
         {error && (
-          <div className="mb-5 flex animate-slide-up items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-            <span className="material-symbols-outlined flex-shrink-0 text-xl text-red-600">
+          <div className="mb-5 flex animate-slide-up items-center gap-3 rounded-[var(--rounded-sm)] px-4 py-3" style={{ backgroundColor: '#fff0f0', border: '1px solid #ffc2c2' }}>
+            <span className="material-symbols-outlined flex-shrink-0 text-xl" style={{ color: '#ff3b30' }}>
               error
             </span>
             <div className="flex-1">
-              <p className="font-body text-sm font-semibold text-red-800">
+              <p className="font-text text-[14px] font-semibold" style={{ color: '#ff3b30' }}>
                 Erreur de chargement
               </p>
-              <p className="font-body text-xs text-red-700">{error}</p>
+              <p className="font-text text-[12px]" style={{ color: '#ff3b30' }}>{error}</p>
             </div>
             <button
               type="button"
               onClick={function () {
                 refetch();
               }}
-              className="rounded-lg border border-red-300 bg-white px-3 py-1.5 font-body text-xs font-semibold text-red-700 transition-colors hover:bg-red-100"
+              className="button-ghost-pill"
+              style={{ fontSize: '12px', padding: '6px 12px' }}
             >
-              Reessayer
+              Réessayer
             </button>
           </div>
         )}
@@ -616,9 +583,6 @@ export default function Interviews() {
         />
       )}
 
-      {toast && (
-        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
-      )}
     </>
   );
 }

@@ -37,10 +37,10 @@ export default function Settings() {
   return (
     <div className="animate-fade-in">
       <header className="mb-6">
-        <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+        <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
           Paramètres
         </h1>
-        <p className="mt-1 font-body text-sm text-text-secondary">
+        <p className="mt-1 font-text text-[14px]" style={{ color: 'var(--color-ink-muted-48)' }}>
           Configurez les préférences de votre plateforme
         </p>
       </header>

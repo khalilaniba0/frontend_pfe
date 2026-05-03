@@ -1,11 +1,11 @@
 # Architecture Frontend - Talentia ATS (CRA)
 
-Mise a jour: 2026-04-05
+Mise a jour: 2026-05-01
 
 ## Objectif
 
-Ce document liste les fichiers frontend importants, leur role, et ou ils sont utilises.
-Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`).
+Ce document inventorie les fichiers frontend maintenables, leur role, et ou ils sont utilises.
+Perimetre: `frontend_pfe/` (code source maintenable, documentation de repo et configs de deploiement, mais pas les artefacts `build/`).
 
 ## Fichiers racine frontend_pfe/
 
@@ -15,6 +15,15 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `frontend_pfe/package-lock.json` : verrouillage des versions npm.
 - `frontend_pfe/jsconfig.json` : alias et resolution imports (`components/...`, `pages/...`). Utilise par tout le code `src`.
 - `frontend_pfe/tailwind.config.js` : configuration Tailwind. Utilise par `src/assets/styles/tailwind.css`.
+- `frontend_pfe/Dockerfile` : image de build/deploiement frontend.
+- `frontend_pfe/dockerignore` : exclusions pour le contexte Docker.
+- `frontend_pfe/nginx.conf` : configuration Nginx pour servir le frontend compile.
+- `frontend_pfe/render.yaml` : configuration de deploiement Render.
+- `frontend_pfe/rewrite.js` : regles de rewrite SPA.
+- `frontend_pfe/DESIGN.md` : documentation de design frontend.
+- `frontend_pfe/report.md` : rapport de projet frontend.
+- `frontend_pfe/CANDIDATE_DISPLAY_QUICK_REFERENCE.md` : aide memoire de l'interface candidat.
+- `frontend_pfe/CANDIDATE_DISPLAY_LOCATIONS.md` : reference des ecrans/locations candidat.
 - `frontend_pfe/src_usage_map.txt` : inventaire/trace des usages dans `src`.
 - `frontend_pfe/architecture1.md` : cartographie des fichiers frontend (ce document).
 
@@ -26,6 +35,7 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `frontend_pfe/public/favicon.ico` : icone navigateur/onglet de l'application.
 - `frontend_pfe/public/logo192.png` : logo PWA 192x192. Utilise par `public/manifest.json`.
 - `frontend_pfe/public/logo512.png` : logo PWA 512x512. Utilise par `public/manifest.json`.
+- `frontend_pfe/public/_redirects` : redirection SPA pour l'hote statique.
 
 ## Noyau src/
 
@@ -34,10 +44,12 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/assets/styles/tailwind.css` : styles globaux Tailwind + tokens UI. Importe dans `src/index.js`.
 - `src/assets/auth-hero-visual.svg` : illustration auth. Utilisee dans `src/components/Sections/HeroAuthentification.jsx`.
 - `src/config/api.js` : definit `API_URL` / `API_ORIGIN`. Utilise par tous les `src/service/restApi*.js`.
+- `src/config/nginx.conf` : configuration Nginx locale/alternative de deploiement.
 - `src/constants/routes.js` : routes centralisees (`ROUTES`). Utilise par `src/App.jsx` + pages/layouts.
 - `src/constants/navigation.js` : menu lateral admin (`NAV_ITEMS`). Utilise par `src/components/miseEnPage/BarreLaterale.jsx`.
 - `src/context/ContexteAuth.jsx` : contexte auth admin/RH (`useAuth`). Utilise par pages/layouts admin.
 - `src/context/ContexteAuthCandidat.jsx` : contexte auth candidat (`useCandidateAuth`). Utilise par pages/layouts candidat.
+- `src/context/ContexteSuperAdmin.jsx` : contexte auth SuperAdmin.
 - `src/layouts/MiseEnPageAuth.jsx` : layout pages auth publiques. Utilise par `src/pages/Connexion.jsx`, `src/pages/Inscription.jsx`, `src/pages/MotDePasseOublie.jsx`.
 
 ## Pages src/pages/
@@ -47,6 +59,9 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/pages/Connexion.jsx` : connexion entreprise/admin. Utilise `MiseEnPageAuth`, `HeroAuthentification`, `LogoMarque`, `ContexteAuth`.
 - `src/pages/Inscription.jsx` : inscription entreprise. Utilise `MiseEnPageAuth`, `HeroAuthentification`, `LogoMarque`, `restApiAuthentification`.
 - `src/pages/MotDePasseOublie.jsx` : demande de reset mot de passe. Utilise `MiseEnPageAuth`.
+- `src/pages/ResetPassword.jsx` : reinitialisation du mot de passe via lien/token.
+- `src/pages/ConfigurationInitiale.jsx` : configuration initiale de compte/entreprise.
+- `src/pages/AccepterInvitation.jsx` : page d'acceptation d'invitation.
 - `src/pages/FormulaireProfil.jsx` : formulaire onboarding profil (public).
 - `src/pages/TableauDeBord.jsx` : dashboard admin/RH. Utilise `useTableauDeBord` + composants `TableauDeBord/*`.
 - `src/pages/Recrutement.jsx` : pipeline recrutement. Utilise `ColonnePipeline`, `ModalCandidat`, `EntretienModal`, `restApiRecrutement`.
@@ -55,12 +70,20 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/pages/Utilisateurs.jsx` : gestion utilisateurs. Utilise `useUtilisateurs`, `TableauUtilisateurs`, `ModalCreationUtilisateur`.
 - `src/pages/Parametres.jsx` : shell parametres. Utilise `MiseEnPageParametres`, `EntrepriseTab`, `IntegrationsTab`, `SecuriteTab`.
 
+## Pages SuperAdmin src/pages/SuperAdmin/
+
+- `src/pages/SuperAdmin/ConnexionSuperAdmin.jsx` : connexion SuperAdmin.
+- `src/pages/SuperAdmin/DashboardSuperAdmin.jsx` : tableau de bord SuperAdmin.
+- `src/pages/SuperAdmin/DemandesInscription.jsx` : gestion des demandes d'inscription.
+- `src/pages/SuperAdmin/GestionEntreprises.jsx` : gestion des entreprises.
+- `src/pages/SuperAdmin/GestionUtilisateurs.jsx` : gestion des utilisateurs SuperAdmin.
+
 ## Pages candidat src/pages/Candidat/
 
 - `src/pages/Candidat/ConnexionCandidat.jsx` : connexion candidat. Utilise `ContexteAuthCandidat`, `LogoMarque`.
 - `src/pages/Candidat/InscriptionCandidat.jsx` : inscription candidat. Utilise `ContexteAuthCandidat`, `LogoMarque`.
 - `src/pages/Candidat/TableauDeBordCandidat.jsx` : dashboard candidat. Utilise `useOffresPubliques`, `restApiCandidature`, `CarteRecommandationOffre`, `CarteStatistique`.
-- `src/pages/Candidat/MesCandidatures.jsx` : liste candidatures candidat. Utilise `CandidatureCard`, `ModalDetailsCandidature`, `restApiCandidature`, `useNotificationsToast`.
+- `src/pages/Candidat/MesCandidatures.jsx` : liste candidatures candidat. Utilise `CandidatureCard`, `ModalDetailsCandidature`, `restApiCandidature`.
 - `src/pages/Candidat/EntretiensCandidat.jsx` : vue simplifiee des entretiens candidat. Utilise `restApiCandidature`.
 - `src/pages/Candidat/ListeOffresCandidat.jsx` : offres cote espace candidat. Utilise `useOffresPubliques`, `CarteOffre`.
 - `src/pages/Candidat/ListeOffresPubliques.jsx` : offres publiques. Utilise `useOffresPubliques`, `CarteOffre`, `BarreNavigation`.
@@ -76,15 +99,15 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/components/Candidat/ModalDetailsCandidature.jsx` : modal de detail candidature. Utilise par `src/pages/Candidat/MesCandidatures.jsx`.
 - `src/components/Candidat/CarteOffre.jsx` : carte offre (liste candidat/public). Utilise par `src/pages/Candidat/ListeOffresCandidat.jsx` et `src/pages/Candidat/ListeOffresPubliques.jsx`.
 - `src/components/Candidat/CarteRecommandationOffre.jsx` : carte recommandation offre. Utilise par `src/pages/Candidat/TableauDeBordCandidat.jsx`.
-- `src/components/Candidat/PanneauNotifications.jsx` : panneau notifications candidat. Utilise par `src/components/miseEnPage/MiseEnPageCandidat.jsx`.
 - `src/components/Candidat/PostulerModal.jsx` : modal de candidature. Utilise par `src/pages/Candidat/DetailOffrePublique.jsx`.
 
 ## Composants communs src/components/commun/
 
 - `src/components/commun/RouteProtegee.jsx` : garde d'acces admin/RH. Utilise par `src/App.jsx`.
 - `src/components/commun/GardeAuthCandidat.jsx` : garde d'acces candidat. Utilise par `src/App.jsx`.
+- `src/components/commun/GardeAuthSuperAdmin.jsx` : garde d'acces SuperAdmin.
 - `src/components/commun/LogoMarque.jsx` : logo de marque reutilisable. Utilise par pages auth et layouts.
-- `src/components/commun/NotificationToast.jsx` : toast systeme. Utilise par pages/modules Offres, Entretiens, Candidatures, Parametres.
+- `src/components/commun/DashboardMockup.jsx` : mockup visuel pour les ecrans marketing/presentation.
 - `src/components/commun/FondModal.jsx` : backdrop modal generique. Utilise par modales Offres/Recrutement/Entretiens/Candidat.
 - `src/components/commun/CarteSelection.jsx` : carte choix profil. Utilise par `src/pages/PageSelection.jsx`.
 
@@ -93,6 +116,8 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/components/miseEnPage/MiseEnPagePublique.jsx` : layout public. Utilise par `src/App.jsx`.
 - `src/components/miseEnPage/MiseEnPageAdmin.jsx` : layout admin/RH. Utilise par `src/App.jsx`.
 - `src/components/miseEnPage/MiseEnPageCandidat.jsx` : layout candidat. Utilise par `src/App.jsx`.
+- `src/components/miseEnPage/MiseEnPageSuperAdmin.jsx` : layout SuperAdmin.
+- `src/components/miseEnPage/MiseEnPageApp.jsx` : shell principal de l'application.
 - `src/components/miseEnPage/BarreLaterale.jsx` : sidebar admin/RH. Utilise par `MiseEnPageAdmin`.
 - `src/components/miseEnPage/BarreNavigationAdmin.jsx` : navbar admin. Utilise par `MiseEnPageAdmin`.
 - `src/components/miseEnPage/BarreNavigation.jsx` : navbar publique/candidat. Utilise par `PageAccueil`, `ListeOffresPubliques`, `DetailOffrePublique`.
@@ -131,7 +156,6 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/components/Parametres/tabs/IntegrationsTab.jsx` : integration Google Calendar. Utilise par `src/pages/Parametres.jsx`.
 - `src/components/Parametres/tabs/SecuriteTab.jsx` : securite mot de passe + modal utilisateurs. Utilise par `src/pages/Parametres.jsx`.
 - `src/components/Parametres/tabs/ApparenceTab.jsx` : tab apparence (present mais non monte dans `Parametres.jsx`).
-- `src/components/Parametres/tabs/NotificationsTab.jsx` : tab notifications (present mais non monte dans `Parametres.jsx`).
 
 ## Composants Tableau de bord src/components/TableauDeBord/
 
@@ -165,31 +189,25 @@ Perimetre: `frontend_pfe/` (code source maintenable, pas les artefacts `build/`)
 - `src/hooks/useEntretiens.js` : logique entretiens (calendar + pipeline). Utilise par `src/pages/Entretiens.jsx`.
 - `src/hooks/useOffresEntreprise.js` : logique CRUD offres entreprise. Utilise par `src/pages/Offres.jsx`.
 - `src/hooks/useOffresPubliques.js` : logique lecture offres publiques/candidat. Utilise par pages candidat d'offres.
-- `src/hooks/useRecrutement.js` : logique recrutement (exporte `useRecruitment`; hook present mais non consomme directement actuellement).
 - `src/hooks/useUtilisateurs.js` : logique gestion utilisateurs. Utilise par `src/pages/Utilisateurs.jsx`.
-- `src/hooks/useNotificationsSysteme.js` : notifications candidat. Utilise par `PanneauNotifications` et `MiseEnPageCandidat`.
-- `src/hooks/useNotificationsToast.js` : helper toast global. Utilise par pages et composants avec feedback utilisateur.
 
 ## Services API src/service/
 
+- `src/service/requestConfig.js` : configuration centrale des requetes HTTP et options partagees.
 - `src/service/restApiAuthentification.js` : login/logout/register/updatePassword. Utilise par `ContexteAuth`, `Inscription`, `SecuriteTab`, `ModalGestionUtilisateurs`.
 - `src/service/restApiCandidat.js` : auth/profil candidat. Utilise par `ContexteAuthCandidat`, `ProfilCandidat`.
+- `src/service/restApiCandidatAuth.js` : endpoints d'authentification candidat.
 - `src/service/restApiCandidature.js` : candidatures candidat (`getMesCandidatures`, `postuler`, `annulerCandidature`). Utilise par pages candidat + `PostulerModal`.
 - `src/service/restApiEntreprise.js` : entreprise + media URL resolver.
   Fonction cle: `resolveEntrepriseMediaUrl(mediaPath)`.
   Utilise par: `CandidatureCard`, `CarteOffre`, `BarreNavigationAdmin`, `DetailOffrePublique`.
 - `src/service/restApiEntretiens.js` : endpoints entretiens + Google connect. Utilise par `useEntretiens`, `Entretiens`, `IntegrationsTab`.
-- `src/service/restApiNotifications.js` : endpoints notifications candidat. Utilise par `useNotificationsSysteme`.
 - `src/service/restApiOffresEntreprise.js` : endpoints offres entreprise. Utilise par `useOffresEntreprise`, `ModalCreationOffre`, `DetailOffrePublique`, `useOffresPubliques`.
 - `src/service/restApiOffresPubliques.js` : lecture offres publiques + token candidat. Utilise par `useOffresPubliques`, `BarreNavigation`.
 - `src/service/restApiRecrutement.js` : endpoints pipeline recrutement. Utilise par `useRecrutement`, `useEntretiens`, `Recrutement`, `Offres`.
+- `src/service/restApiSuperAdmin.js` : endpoints SuperAdmin.
 - `src/service/restApiTableauDeBord.js` : endpoints stats dashboard admin. Utilise par `useTableauDeBord`.
 - `src/service/restApiUtilisateurs.js` : endpoints utilisateurs. Utilise par `ContexteAuth`, `useUtilisateurs`, `TableauUtilisateurs`, `Entretiens`, `IntegrationsTab`, `ModalGestionUtilisateurs`.
-
-## Dossiers sans fichiers actifs
-
-- `src/components/auth/` : dossier present mais sans fichier.
-- `src/components/ui/` : dossier present mais sans fichier.
 
 ## Exemple demande (trace explicite)
 

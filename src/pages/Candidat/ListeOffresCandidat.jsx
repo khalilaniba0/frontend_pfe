@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Search, Grid, List as ListIcon } from "lucide-react";
+import { Grid, List as ListIcon } from "lucide-react";
 
 import { ROUTES } from "constants/routes";
 import JobCard from "components/Candidat/CarteOffre.jsx";
@@ -53,69 +53,63 @@ export default function CandidateOffresList() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl animate-fade-in space-y-8 p-4 md:p-8">
+    <div
+      className="mx-auto max-w-7xl animate-fade-in space-y-8 p-4 md:p-8"
+      style={{ backgroundColor: "var(--color-canvas-parchment)" }}
+    >
       <section>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-text-primary md:text-3xl">
+        <h1
+          className="font-display"
+          style={{
+            fontSize: "34px",
+            fontWeight: 600,
+            lineHeight: 1.47,
+            letterSpacing: "-0.374px",
+            color: "var(--color-ink)",
+          }}
+        >
           Offres
         </h1>
       </section>
 
       {/* Hero / Search */}
       <section>
-        <form
-          className="max-w-3xl"
-          onSubmit={function (event) {
-            event.preventDefault();
-          }}
-        >
-          <div className="relative rounded-xl border border-gray-200 bg-white p-1.5 shadow-sm">
-            <Search
-              size={18}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+        <div className="max-w-3xl">
+          <div className="rounded-[var(--rounded-lg)] p-1.5" style={{ border: "1px solid var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}>
             <input
-              type="text"
+              type="search"
               value={searchTerm}
               onChange={function (event) {
                 setSearchTerm(event.target.value);
               }}
               placeholder="Nom du poste ou compétence (Python, Node.js...)"
-              className="w-full rounded-lg border-none py-2.5 pl-10 pr-32 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-0"
+              className="apple-search"
             />
-
-            <button
-              type="submit"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-teal-600"
-            >
-              Rechercher
-            </button>
           </div>
-        </form>
+        </div>
 
       </section>
 
       {/* Results */}
       <section>
         <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <p className="text-sm text-gray-500">
+          <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
             {loading
               ? "Chargement des postes..."
               : `${filteredOffres.length} poste(s) disponible(s)`}
           </p>
 
           <div className="flex items-center gap-3">
-            <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
+            <div
+              className="inline-flex rounded-[var(--rounded-pill)] p-1"
+              style={{ border: "1px solid var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}
+            >
               <button
                 type="button"
                 onClick={function () {
                   setViewMode("grid");
                 }}
-                className={
-                  "rounded-md p-2 transition-colors " +
-                  (viewMode === "grid"
-                    ? "bg-teal-50 text-teal-600"
-                    : "text-gray-400 hover:bg-gray-50")
-                }
+                className={"chip-option rounded-[var(--rounded-pill)] p-2 " + (viewMode === "grid" ? "active" : "")}
               >
                 <Grid size={18} />
               </button>
@@ -124,12 +118,7 @@ export default function CandidateOffresList() {
                 onClick={function () {
                   setViewMode("list");
                 }}
-                className={
-                  "rounded-md p-2 transition-colors " +
-                  (viewMode === "list"
-                    ? "bg-teal-50 text-teal-600"
-                    : "text-gray-400 hover:bg-gray-50")
-                }
+                className={"chip-option rounded-[var(--rounded-pill)] p-2 " + (viewMode === "list" ? "active" : "")}
               >
                 <ListIcon size={18} />
               </button>
@@ -138,7 +127,7 @@ export default function CandidateOffresList() {
         </div>
 
         {error ? (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="apple-card px-4 py-3" style={{ borderColor: "#ff3b30", color: "#ff3b30" }}>
             <div className="flex items-center justify-between gap-3">
               <span>{error}</span>
               <button
@@ -146,7 +135,8 @@ export default function CandidateOffresList() {
                 onClick={function () {
                   refetch();
                 }}
-                className="rounded-lg border border-red-300 bg-white px-3 py-1 font-semibold text-red-700 transition-colors hover:bg-red-100"
+                className="button-ghost-pill"
+                style={{ fontSize: "14px", padding: "8px 14px" }}
               >
                 Reessayer
               </button>
@@ -155,11 +145,11 @@ export default function CandidateOffresList() {
         ) : null}
 
         {!loading && !error && filteredOffres.length === 0 ? (
-          <div className="rounded-xl border border-gray-200 bg-white px-5 py-10 text-center">
-            <p className="font-medium text-gray-700">
+          <div className="apple-card px-5 py-10 text-center">
+            <p className="font-text text-[17px]" style={{ color: "var(--color-ink)" }}>
               Aucune offre ne correspond à votre recherche.
             </p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
               Essayez de changer vos mots-clés.
             </p>
           </div>
@@ -177,7 +167,8 @@ export default function CandidateOffresList() {
                 return (
                   <div
                     key={`skeleton-${index}`}
-                    className="h-44 animate-pulse rounded-xl border border-gray-200 bg-white"
+                      className="h-44 animate-pulse rounded-[var(--rounded-lg)]"
+                      style={{ border: "1px solid var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}
                   />
                 );
               })

@@ -171,9 +171,6 @@ export default function CandidateInterviews() {
           Mes entretiens
         </h1>
         <div className="relative w-full md:w-[420px]">
-          <span className="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-text-muted">
-            search
-          </span>
           <input
             type="text"
             value={search}
@@ -181,7 +178,7 @@ export default function CandidateInterviews() {
               setSearch(event.target.value);
             }}
             placeholder="Rechercher par poste, entreprise ou type"
-            className="w-full rounded-2xl border border-border bg-white py-2.5 pl-11 pr-4 font-body text-sm text-text-primary outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 font-body text-sm text-text-primary outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </div>
       </div>

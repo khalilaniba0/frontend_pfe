@@ -25,17 +25,17 @@ export default function ApparenceTab() {
     },
     {
       id: "sombre",
-      label: "Mode sombre",
-      icon: "dark_mode",
-      preview: "bg-slate-800",
-      previewBar: "bg-slate-600",
+      label: "Mode clair (uniquement)",
+      icon: "light_mode",
+      preview: "bg-gray-50",
+      previewBar: "bg-gray-200",
     },
     {
       id: "systeme",
-      label: "Système",
-      icon: "contrast",
-      preview: "bg-gradient-to-r from-white to-slate-800",
-      previewBar: "bg-gradient-to-r from-gray-200 to-slate-600",
+      label: "Mode clair (uniquement)",
+      icon: "light_mode",
+      preview: "bg-white",
+      previewBar: "bg-gray-200",
     },
   ];
 

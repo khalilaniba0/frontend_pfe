@@ -9,9 +9,6 @@ export default function UserTableHeader({ searchTerm, onSearchChange }) {
         Membres de l'equipe
       </h3>
       <div className="relative">
-        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-text-muted">
-          search
-        </span>
         <input
           type="text"
           placeholder="Rechercher un membre..."
@@ -19,7 +16,7 @@ export default function UserTableHeader({ searchTerm, onSearchChange }) {
           onChange={function (e) {
             onSearchChange(e.target.value);
           }}
-          className="w-full rounded-xl border border-border bg-bg-soft py-2 pl-10 pr-4 font-body text-sm text-text-primary placeholder:text-text-muted transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 sm:w-64"
+          className="w-full rounded-xl border border-border bg-bg-soft px-4 py-2 font-body text-sm text-text-primary placeholder:text-text-muted transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 sm:w-64"
         />
       </div>
     </div>

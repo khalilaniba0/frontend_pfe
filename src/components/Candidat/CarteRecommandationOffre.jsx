@@ -43,10 +43,14 @@ export default function OffreRecommendationCard({ offre, onClick }) {
         </div>
       </div>
       <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-        <p className="flex items-center gap-1 font-body text-xs text-text-muted">
-          <span className="material-symbols-outlined text-[14px]">location_on</span>
-          {offre?.localisation || "Non specifie"}
-        </p>
+        {offre?.localisation ? (
+          <p className="flex items-center gap-1 font-body text-xs text-text-muted">
+            <span className="material-symbols-outlined text-[14px]">location_on</span>
+            {offre.localisation}
+          </p>
+        ) : (
+          <div />
+        )}
         <button className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary transition-colors group-hover:bg-primary group-hover:text-white">
           <span className="material-symbols-outlined text-sm">arrow_forward</span>
         </button>

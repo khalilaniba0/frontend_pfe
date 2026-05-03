@@ -7,6 +7,7 @@ import "assets/styles/tailwind.css";
 
 import { AuthProvider } from "context/ContexteAuth";
 import { CandidateAuthProvider } from "context/ContexteAuthCandidat";
+import { SuperAdminProvider } from "context/ContexteSuperAdmin";
 import App from "./App";
 
 const root = createRoot(document.getElementById("root"));
@@ -14,7 +15,9 @@ root.render(
   <BrowserRouter>
     <AuthProvider>
       <CandidateAuthProvider>
-        <App />
+        <SuperAdminProvider>
+          <App />
+        </SuperAdminProvider>
       </CandidateAuthProvider>
     </AuthProvider>
   </BrowserRouter>

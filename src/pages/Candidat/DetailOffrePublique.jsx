@@ -3,10 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { ROUTES } from "constants/routes";
 import Navbar from "components/miseEnPage/BarreNavigation.jsx";
-import PostulerModal from "components/Candidat/PostulerModal";
 import { useCandidateAuth } from "context/ContexteAuthCandidat";
 import { getOffreById } from "service/restApiOffresEntreprise";
-import { resolveEntrepriseMediaUrl } from "service/restApiEntreprise";
+import { resolveEntrepriseMediaUrl, getPublicEntreprise } from "service/restApiEntreprise";
+import PostulerModal from "components/Candidat/PostulerModal";
 
 function formatPublishedDate(dateStr) {
   if (!dateStr) return null;
@@ -91,92 +91,68 @@ function JobHero(props) {
   var publishedLabel = props.publishedLabel;
   var entrepriseNom = props.entrepriseNom;
   var localisation = props.localisation;
-  var salaire = props.salaire;
   var isClosed = props.isClosed;
-  var onPostuler = props.onPostuler;
-  var showBackButton = props.showBackButton;
-  var onBack = props.onBack;
+  var onPostulerClick = props.onPostulerClick;
 
   return (
     <section
-      className={
-        "relative overflow-hidden bg-gradient-to-br from-[#00629f] to-[#3197e8] px-4 text-white md:px-8 " +
-        (showBackButton ? "pt-3 pb-12 md:pt-4 md:pb-16" : "py-16 md:py-24")
-      }
+      className="relative overflow-hidden px-4 py-10 md:px-8 md:py-14"
+      style={{ backgroundColor: "#ffffff", borderBottom: "1px solid var(--color-hairline)" }}
     >
-      {showBackButton && (
-        <div className="relative z-20 mx-auto mb-3 max-w-7xl">
-          <button
-            type="button"
-            onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/90 px-4 py-2 text-sm font-semibold text-[#0b5f9a] shadow-sm transition-all hover:bg-white"
-          >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            Retour aux offres
-          </button>
-        </div>
-      )}
+      {/* Conteneur principal (limité à max-w-7xl) pour l'alignement */}
+      <div className="relative z-20 mx-auto max-w-7xl">
 
-      <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-3xl">
-          {(typeContrat || publishedLabel) && (
-            <div className="mb-6 flex items-center gap-3">
-              {typeContrat && (
-                <span className="rounded-sm bg-[#ffdea8] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#271900]">
-                  {typeContrat}
-                </span>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" style={{ color: "var(--color-ink)" }}>
+          <div className="max-w-3xl">
+            {(typeContrat || publishedLabel) && (
+              <div className="mb-4 flex items-center gap-3">
+                {typeContrat && (
+                  <span className="badge-count" style={{ backgroundColor: "#e8f0fb", color: "var(--color-primary)" }}>
+                    {typeContrat}
+                  </span>
+                )}
+                {publishedLabel && (
+                  <span className="font-text text-[14px]" style={{ color: "var(--color-body-muted)" }}>{publishedLabel}</span>
+                )}
+              </div>
+            )}
+
+            <h1
+              className="mb-4 font-display font-semibold"
+              style={{ fontSize: "clamp(34px, 4vw, 40px)", lineHeight: 1.1, letterSpacing: "-0.28px" }}
+            >
+              {titre}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-4 font-text text-[14px] sm:gap-6" style={{ color: "var(--color-body-muted)" }}>
+              {entrepriseNom && (
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px] opacity-80">business</span>
+                  <span>{entrepriseNom}</span>
+                </div>
               )}
-              {publishedLabel && (
-                <span className="text-sm font-medium text-[#d0e4ff]">{publishedLabel}</span>
+              {localisation && (
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px] opacity-80">location_on</span>
+                  <span>{localisation}</span>
+                </div>
               )}
             </div>
-          )}
-
-          <h1 className="mb-4 text-2xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-6xl">
-            {titre}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-3 font-medium text-[#d0e4ff] sm:gap-6">
-            {entrepriseNom && (
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg">business</span>
-                <span>{entrepriseNom}</span>
-              </div>
-            )}
-            {localisation && (
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg">location_on</span>
-                <span>{localisation}</span>
-              </div>
-            )}
-            {salaire && (
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg">payments</span>
-                <span>{salaire}</span>
-              </div>
-            )}
           </div>
-        </div>
 
-        <div className="shrink-0">
-          <button
-            type="button"
-            disabled={isClosed}
-            onClick={onPostuler}
-            className={
-              "rounded-full px-6 py-3 text-base font-extrabold shadow-xl transition-all active:scale-95 sm:px-10 sm:py-4 sm:text-lg " +
-              (isClosed
-                ? "cursor-not-allowed bg-slate-200 text-slate-500"
-                : "bg-white text-[#00629f] hover:bg-[#f2f4f6]")
-            }
-          >
-            {isClosed ? "Offre fermée" : "Postuler"}
-          </button>
+          {onPostulerClick && !isClosed && (
+            <div className="flex shrink-0">
+              <button
+                type="button"
+                onClick={onPostulerClick}
+                className="button-primary inline-flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-lg">send</span>
+                Postuler
+              </button>
+            </div>
+          )}
         </div>
-      </div>
-
-      <div className="pointer-events-none absolute right-0 top-0 h-full w-1/3 opacity-10">
-        <div className="h-full w-full translate-x-1/2 rotate-12 rounded-3xl bg-white" />
       </div>
     </section>
   );
@@ -188,13 +164,13 @@ function JobDetailsPanel(props) {
 
   return (
     <div className="min-w-0 overflow-hidden lg:col-span-8">
-      <section>
-        <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-[#191c1e]">
-          <span className="h-8 w-2 rounded-full bg-[#006973]" />
+      <section className="apple-card">
+        <h2 className="mb-6 flex items-center gap-3 font-display text-[34px] font-semibold" style={{ color: "var(--color-ink)", letterSpacing: "-0.374px" }}>
+          <span className="h-8 w-2 rounded-[var(--rounded-pill)]" style={{ backgroundColor: "var(--color-primary)" }} />
           Description du poste
         </h2>
 
-        <div className="space-y-6 text-lg leading-relaxed text-[#404751] break-words overflow-wrap-anywhere">
+        <div className="space-y-6 break-words overflow-wrap-anywhere font-text text-[17px] leading-[1.47]" style={{ color: "var(--color-ink-muted-80)" }}>
           {descriptionParagraphs.length > 0 ? (
             descriptionParagraphs.map(function (paragraph, idx) {
               return (
@@ -212,7 +188,7 @@ function JobDetailsPanel(props) {
               {responsibilities.map(function (line, idx) {
                 return (
                   <li key={idx} className="flex gap-4">
-                    <span className="material-symbols-outlined mt-1 text-[#006973]">
+                    <span className="material-symbols-outlined mt-1" style={{ color: "var(--color-primary)" }}>
                       check_circle
                     </span>
                     <span>{line}</span>
@@ -232,11 +208,11 @@ function JobSkillsPanel(props) {
   var additionalInfo = props.additionalInfo;
 
   return (
-    <section className="rounded-[2rem] bg-[#f2f4f6] p-6">
-      <h2 className="mb-6 text-xl font-bold text-[#191c1e]">Compétences requises</h2>
+    <section className="apple-card">
+      <h2 className="mb-6 font-display text-[21px] font-semibold" style={{ color: "var(--color-ink)", letterSpacing: "0.231px" }}>Compétences requises</h2>
       <div className="grid grid-cols-1 gap-6">
         <div>
-          <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#00629f]">
+          <h3 className="mb-4 font-text text-[12px] font-semibold uppercase tracking-widest" style={{ color: "var(--color-primary)" }}>
             Technical Stack
           </h3>
           {skills.length > 0 ? (
@@ -245,7 +221,7 @@ function JobSkillsPanel(props) {
                 return (
                   <span
                     key={idx}
-                    className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#404751]"
+                    className="badge-count px-4 py-2"
                   >
                     {skill}
                   </span>
@@ -253,19 +229,19 @@ function JobSkillsPanel(props) {
               })}
             </div>
           ) : (
-            <p className="text-sm text-[#404751]">Compétences non renseignées.</p>
+            <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>Compétences non renseignées.</p>
           )}
         </div>
         <div>
-          <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#00629f]">
+          <h3 className="mb-4 font-text text-[12px] font-semibold uppercase tracking-widest" style={{ color: "var(--color-primary)" }}>
             Informations clés
           </h3>
           {additionalInfo.length > 0 ? (
-            <ul className="space-y-3 text-sm text-[#404751]">
+            <ul className="space-y-3 font-text text-[14px]" style={{ color: "var(--color-ink-muted-80)" }}>
               {additionalInfo.map(function (item) {
                 return (
                   <li key={item.label} className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#006973]" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
                     <span>
                       <strong>{item.label}:</strong> {item.value}
                     </span>
@@ -274,7 +250,7 @@ function JobSkillsPanel(props) {
               })}
             </ul>
           ) : (
-            <p className="text-sm text-[#404751]">Aucune information complémentaire fournie.</p>
+            <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>Aucune information complémentaire fournie.</p>
           )}
         </div>
       </div>
@@ -282,11 +258,12 @@ function JobSkillsPanel(props) {
   );
 }
 
-function JobSidebar(props) {
+function CompanyAboutCard(props) {
   var entrepriseNom = props.entrepriseNom;
   var logoEntreprise = props.logoEntreprise;
-  var skills = props.skills;
-  var additionalInfo = props.additionalInfo;
+  var apropos = props.apropos;
+  var siteWeb = props.siteWeb;
+  var email = props.email;
   var [logoLoadError, setLogoLoadError] = useState(false);
 
   useEffect(
@@ -299,30 +276,87 @@ function JobSidebar(props) {
   var shouldShowLogo = Boolean(logoEntreprise) && !logoLoadError;
 
   return (
-    <aside className="space-y-8 lg:col-span-4">
-      <div className="rounded-[2rem] border border-transparent bg-white p-8 shadow-sm">
-        <div className="mb-6 flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#f2f4f6]">
-            {shouldShowLogo ? (
-              <img
-                src={logoEntreprise}
-                alt={entrepriseNom}
-                className="h-full w-full object-cover"
-                onError={function () {
-                  setLogoLoadError(true);
-                }}
-              />
-            ) : (
-              <span className="text-xl font-black text-[#00629f]">
-                {getCompanyInitials(entrepriseNom)}
-              </span>
-            )}
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-[#191c1e]">{entrepriseNom}</h3>
-          </div>
+    <div className="apple-card p-8">
+      <h3 className="mb-5 flex items-center gap-2 font-display text-[21px] font-semibold" style={{ color: "var(--color-ink)", letterSpacing: "0.231px" }}>
+        <span className="material-symbols-outlined text-xl" style={{ color: "var(--color-primary)" }}>apartment</span>
+        À propos de l'entreprise
+      </h3>
+
+      <div className="mb-5 flex items-center gap-4">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[var(--rounded-sm)]" style={{ backgroundColor: "var(--color-canvas-parchment)" }}>
+          {shouldShowLogo ? (
+            <img
+              src={logoEntreprise}
+              alt={entrepriseNom}
+              className="allow-product-shadow h-full w-full object-cover"
+              onError={function () {
+                setLogoLoadError(true);
+              }}
+            />
+          ) : (
+            <span className="font-display text-lg font-semibold" style={{ color: "var(--color-primary)" }}>
+              {getCompanyInitials(entrepriseNom)}
+            </span>
+          )}
+        </div>
+        <div>
+          <h4 className="font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>{entrepriseNom}</h4>
         </div>
       </div>
+
+      {apropos ? (
+        <>
+          <div className="mb-5 h-px w-full" style={{ backgroundColor: "var(--color-divider-soft)" }} />
+          <p className="whitespace-pre-line font-text text-[14px] leading-relaxed" style={{ color: "var(--color-ink-muted-80)" }}>
+            {apropos}
+          </p>
+        </>
+      ) : null}
+
+      {(siteWeb || email) ? (
+        <div className={"flex flex-col gap-2 " + (apropos ? "mt-5" : "")}>
+          {siteWeb && (
+            <a
+              href={siteWeb.startsWith("http") ? siteWeb : "https://" + siteWeb}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link inline-flex items-center gap-2 font-text text-[14px] font-semibold"
+            >
+              <span className="material-symbols-outlined text-base">language</span>
+              {siteWeb.replace(/^https?:\/\//, "")}
+            </a>
+          )}
+          {email && (
+            <a
+              href={"mailto:" + email}
+              className="text-link inline-flex items-center gap-2 font-text text-[14px] font-semibold"
+            >
+              <span className="material-symbols-outlined text-base">mail</span>
+              {email}
+            </a>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function JobSidebar(props) {
+  var entrepriseNom = props.entrepriseNom;
+  var logoEntreprise = props.logoEntreprise;
+  var skills = props.skills;
+  var additionalInfo = props.additionalInfo;
+  var entrepriseData = props.entrepriseData;
+
+  return (
+    <aside className="space-y-6 lg:col-span-4">
+      <CompanyAboutCard
+        entrepriseNom={entrepriseNom}
+        logoEntreprise={logoEntreprise}
+        apropos={entrepriseData?.apropos || ""}
+        siteWeb={entrepriseData?.siteWeb || ""}
+        email={entrepriseData?.email || ""}
+      />
 
       <JobSkillsPanel
         skills={skills}
@@ -357,12 +391,12 @@ function ErrorState(props) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center justify-center px-6 py-28 text-center">
       <span className="material-symbols-outlined mb-4 text-6xl text-red-500">error</span>
-      <h2 className="mb-2 text-2xl font-bold text-[#191c1e]">Offre introuvable</h2>
-      <p className="mb-8 text-[#404751]">{message || "Impossible de charger cette offre."}</p>
+      <h2 className="mb-2 font-display text-[34px] font-semibold" style={{ color: "var(--color-ink)" }}>Offre introuvable</h2>
+      <p className="mb-8 font-text text-[17px]" style={{ color: "var(--color-ink-muted-80)" }}>{message || "Impossible de charger cette offre."}</p>
       <button
         type="button"
         onClick={onBack}
-        className="rounded-full bg-[#00629f] px-8 py-3 font-bold text-white transition-colors hover:bg-[#004a79]"
+        className="button-primary"
       >
         Retour aux offres
       </button>
@@ -371,7 +405,7 @@ function ErrorState(props) {
 }
 
 export default function JobDetail(props) {
-  var showNavbar = props.showNavbar !== false;
+  var showNavbar = props.showNavbar === true;
   var forceCandidateApply = Boolean(props.forceCandidateApply);
   var backToRoute = props.backToRoute || ROUTES.CANDIDATE.OFFRES;
   var params = useParams();
@@ -477,7 +511,7 @@ export default function JobDetail(props) {
 
   var skills = useMemo(
     function () {
-      return toStringList(offre?.competences || offre?.skills || offre?.technologies || offre?.requirements);
+      return toStringList(offre?.competences || offre?.skills || offre?.exigences || offre?.requirements || offre?.technologies);
     },
     [offre]
   );
@@ -506,27 +540,10 @@ export default function JobDetail(props) {
     offre?.entreprise?.logo || offre?.logoEntreprise || offre?.logo || ""
   );
 
-  function handlePostuler() {
-    if (isClosed) {
-      return;
-    }
 
-    if (!forceCandidateApply && !isAuthenticated) {
-      var redirectUrl = "/offres/" + id;
-      sessionStorage.setItem("redirectAfterAuth", redirectUrl);
-      navigate("/candidat/login?redirect=" + encodeURIComponent(redirectUrl));
-      return;
-    }
-
-    setShowPostulerModal(true);
-  }
 
   return (
-    <div className="min-h-screen bg-[#f7f9fb] text-[#191c1e]">
-      <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
-        rel="stylesheet"
-      />
+    <div className="min-h-screen" style={{ backgroundColor: "var(--color-canvas-parchment)", color: "var(--color-ink)", fontFamily: "var(--font-text)" }}>
       <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet"
@@ -534,13 +551,13 @@ export default function JobDetail(props) {
 
       {showNavbar ? <Navbar /> : null}
 
-      <main className={"pb-20 font-['Manrope'] " + (showNavbar ? "pt-24" : "-mt-8 pt-0")}>
+      <main className={"pb-20 " + (showNavbar ? "pt-24" : "-mt-8 pt-0")}>
         {!loading && !error && showNavbar && (
           <div className="mx-auto max-w-7xl px-4 pt-4 pb-2 md:px-8">
             <button
               type="button"
               onClick={function () { navigate(backToRoute); }}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm transition-all hover:border-[#00629f] hover:text-[#00629f] hover:shadow-md"
+              className="button-ghost-pill inline-flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-[18px]">arrow_back</span>
               Retour aux offres
@@ -564,12 +581,16 @@ export default function JobDetail(props) {
               publishedLabel={publishedLabel}
               entrepriseNom={entrepriseNom}
               localisation={localisation}
-              salaire={salaire}
               isClosed={isClosed}
-              onPostuler={handlePostuler}
-              showBackButton={!showNavbar}
-              onBack={function () {
-                navigate(backToRoute);
+              onPostulerClick={function () {
+                if (!isAuthenticated || !candidateAuth.candidat) {
+                  navigate(
+                    `${ROUTES.CANDIDATE.LOGIN}?redirect=${encodeURIComponent(`/offres/${id}`)}`
+                  );
+                  return;
+                }
+
+                setShowPostulerModal(true);
               }}
             />
 
@@ -583,24 +604,26 @@ export default function JobDetail(props) {
                 logoEntreprise={logoEntreprise}
                 skills={skills}
                 additionalInfo={additionalInfo}
+                entrepriseData={offre?.entreprise || null}
               />
             </div>
+
+            {showPostulerModal && (
+              <PostulerModal
+                offreId={id}
+                offreTitre={titre}
+                onClose={function () {
+                  setShowPostulerModal(false);
+                }}
+                onSuccess={function () {
+                  setShowPostulerModal(false);
+                  navigate(ROUTES.CANDIDATE.MES_CANDIDATURES);
+                }}
+              />
+            )}
           </>
         )}
       </main>
-
-      {showPostulerModal && (
-        <PostulerModal
-          offreId={id}
-          offreTitre={titre}
-          onClose={function () {
-            setShowPostulerModal(false);
-          }}
-          onSuccess={function () {
-            setShowPostulerModal(false);
-          }}
-        />
-      )}
     </div>
   );
 }

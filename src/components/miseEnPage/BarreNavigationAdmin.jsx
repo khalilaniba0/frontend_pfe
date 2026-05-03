@@ -67,37 +67,68 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
   const shouldShowCompanyLogo = Boolean(companyLogo) && !logoLoadError;
 
   return (
-    <nav className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-white/80 px-6 backdrop-blur-md">
+    <nav
+      className="sticky top-0 z-50 flex items-center justify-between px-6"
+      style={{
+        height: "52px",
+        backgroundColor: "var(--color-canvas)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        fontFamily: "var(--font-text)",
+      }}
+    >
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={function () {
             setSidebarOpen(!sidebarOpen);
           }}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors duration-150 hover:bg-bg-soft hover:text-text-primary lg:hidden"
+          className="flex h-[44px] w-[44px] items-center justify-center rounded-[var(--rounded-sm)] border-none bg-transparent transition-colors duration-150 lg:hidden"
+          style={{ color: "var(--color-ink)" }}
           aria-label="Menu"
         >
           <span className="material-symbols-outlined text-xl">menu</span>
         </button>
         <div className="hidden items-center gap-2 lg:flex">
-          <span className="font-body text-sm text-text-muted">Bienvenue,</span>
-          <span className="font-body text-sm font-semibold text-text-primary">
+          <span
+            className="font-text text-[14px]"
+            style={{ color: "var(--color-ink-muted-48)" }}
+          >
+            Bienvenue,
+          </span>
+          <span
+            className="font-text text-[14px] font-semibold"
+            style={{ color: "var(--color-ink)" }}
+          >
             {user?.name?.split(" ")[0] || "Utilisateur"}
           </span>
         </div>
       </div>
 
       <div className="flex items-center gap-2">
-
-        <div className="mx-2 h-6 w-px bg-border"></div>
+        <div
+          className="mx-2 h-5 w-px"
+          style={{ backgroundColor: "var(--color-hairline)" }}
+        />
 
         <div className="flex items-center gap-3">
           <div
             className={
-              "flex h-9 w-9 items-center justify-center rounded-xl shadow-sm " +
+              "flex h-10 w-10 items-center justify-center rounded-[var(--rounded-pill)] " +
               (shouldShowCompanyLogo
-                ? "overflow-hidden border border-border bg-white"
-                : "bg-gradient-to-br from-primary to-secondary font-display text-xs font-bold text-white")
+                ? "overflow-hidden"
+                : "font-display text-[12px] font-semibold")
+            }
+            style={
+              shouldShowCompanyLogo
+                ? {
+                    border: "1px solid var(--color-hairline)",
+                    boxShadow: "var(--shadow-product)",
+                  }
+                : {
+                    backgroundColor: "var(--color-primary)",
+                    color: "var(--color-on-primary)",
+                  }
             }
           >
             {shouldShowCompanyLogo ? (
@@ -114,14 +145,20 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
             )}
           </div>
           <div className="hidden flex-col sm:flex">
-            <span className="font-body text-sm font-medium text-text-primary">
+            <span
+              className="font-text text-[14px] font-semibold"
+              style={{ color: "var(--color-ink)" }}
+            >
               {user?.name || "Jane Doe"}
             </span>
             <span
-              className={
-                "font-body text-xs " +
-                (user?.role === "admin" ? "text-primary" : "text-text-secondary")
-              }
+              className="font-text text-[12px]"
+              style={{
+                color:
+                  user?.role === "admin"
+                    ? "var(--color-primary)"
+                    : "var(--color-ink-muted-48)",
+              }}
             >
               {user?.role === "admin" ? "Administrateur" : "Ressources Humaines"}
             </span>
@@ -131,7 +168,11 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
         <button
           type="button"
           onClick={logout}
-          className="ml-2 flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-all duration-150 hover:bg-red-50 hover:text-red-500"
+          className="button-dark-utility ml-2"
+          style={{
+            background: "transparent",
+            color: "var(--color-ink-muted-48)",
+          }}
           aria-label="Déconnexion"
           title="Se déconnecter"
         >

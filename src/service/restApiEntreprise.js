@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_ORIGIN, API_URL } from "config/api";
 import {
   AUTH_REQUEST_CONFIG,
+  PUBLIC_REQUEST_CONFIG,
   buildMultipartAuthConfig,
 } from "./requestConfig";
 
@@ -37,3 +38,11 @@ export function resolveEntrepriseMediaUrl(mediaPath) {
 
   return `${API_ORIGIN}/${mediaPath}`;
 }
+
+export async function getPublicEntreprise(id) {
+  return await axios.get(
+    `${API_URL}/entreprise/${id}/public`,
+    PUBLIC_REQUEST_CONFIG,
+  );
+}
+

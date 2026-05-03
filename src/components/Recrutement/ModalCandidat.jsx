@@ -79,22 +79,6 @@ export default function CandidateModal({
       });
   }
 
-  var gradients = [
-    "from-pink-400 to-rose-500",
-    "from-violet-400 to-purple-500",
-    "from-sky-400 to-blue-500",
-    "from-emerald-400 to-teal-500",
-    "from-amber-400 to-orange-500",
-  ];
-
-  function getGradient(name) {
-    var index =
-      name.split("").reduce(function (acc, char) {
-        return acc + char.charCodeAt(0);
-      }, 0) % gradients.length;
-    return gradients[index];
-  }
-
   function getInitials(name) {
     return name
       .split(" ")
@@ -171,36 +155,34 @@ export default function CandidateModal({
   return (
     <ModalBackdrop onClose={onClose}>
       <div
-        className="relative flex w-full max-h-[95vh] flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl md:max-w-[520px] md:max-h-[90vh] md:rounded-2xl"
+        className="apple-modal modal-animate relative flex w-full max-h-[95vh] flex-col overflow-hidden p-0 md:max-w-[560px]"
         onClick={function (e) {
           e.stopPropagation();
         }}
       >
-        <div className="flex items-start justify-between border-b border-border p-5">
+        <div className="flex items-start justify-between border-b p-5" style={{ borderColor: "var(--color-divider-soft)", backgroundColor: "#f5f5f7" }}>
           <div className="flex items-center gap-4">
             {candidate.avatar ? (
               <img
                 alt={candidate.name}
-                className="h-14 w-14 rounded-xl bg-gray-100 object-cover"
+                className="avatar-image h-14 w-14 rounded-[var(--rounded-pill)] bg-white object-cover"
                 src={candidate.avatar}
               />
             ) : (
               <div
-                className={
-                  "flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br font-body text-sm font-bold text-white shadow-sm " +
-                  getGradient(candidate.name)
-                }
+                className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-[var(--rounded-pill)] font-text text-sm font-semibold"
+                style={{ backgroundColor: "#e8f0fb", color: "var(--color-primary)" }}
               >
                 {getInitials(candidate.name)}
               </div>
             )}
             <div>
-              <h2 className="font-display text-lg font-bold text-text-primary">
+              <h2 className="font-display text-[21px] font-semibold" style={{ color: "var(--color-ink)", letterSpacing: "0.231px" }}>
                 {candidate.name}
               </h2>
-              <p className="font-body text-sm text-text-secondary">
+              <p className="font-text text-[14px]" style={{ color: "var(--color-body-muted)" }}>
                 {candidate.role} •{" "}
-                <span className={"font-semibold " + scoreColorClass}>
+                <span className={"font-semibold " + scoreColorClass} style={{ color: "var(--color-primary)" }}>
                   Score IA : {scoreLabel}
                 </span>
               </p>
@@ -209,42 +191,43 @@ export default function CandidateModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-bg-soft hover:text-text-primary"
+            className="button-icon-circular"
+            aria-label="Fermer"
           >
             <span className="material-symbols-outlined text-xl">close</span>
           </button>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto p-5">
+        <div className="max-h-[60vh] overflow-y-auto p-5" style={{ backgroundColor: "var(--color-canvas)" }}>
           <div className="mb-5 space-y-3">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-lg text-text-muted">
+              <span className="material-symbols-outlined text-lg" style={{ color: "var(--color-ink-muted-48)" }}>
                 mail
               </span>
               <a
                 href={"mailto:" + candidate.email}
-                className="font-body text-sm text-primary hover:underline"
+                className="text-link font-text text-[14px] hover:underline"
               >
                 {candidate.email}
               </a>
             </div>
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-lg text-text-muted">
+              <span className="material-symbols-outlined text-lg" style={{ color: "var(--color-ink-muted-48)" }}>
                 phone
               </span>
-              <span className="font-body text-sm text-text-primary">
+              <span className="font-text text-[14px]" style={{ color: "var(--color-ink)" }}>
                 {candidate.phone}
               </span>
             </div>
           </div>
 
-          <div className="mb-5 border-t border-border pt-5">
+          <div className="mb-5 border-t pt-5" style={{ borderColor: "var(--color-divider-soft)" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg text-text-muted">
+                <span className="material-symbols-outlined text-lg" style={{ color: "var(--color-ink-muted-48)" }}>
                   description
                 </span>
-                <span className="font-body text-sm font-medium text-text-primary">
+                <span className="font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>
                   CV
                 </span>
               </div>
@@ -253,7 +236,7 @@ export default function CandidateModal({
                   href={cvHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 font-body text-sm font-medium text-primary transition-colors hover:text-primary-dark"
+                  className="text-link flex items-center gap-1 font-text text-[14px] font-semibold"
                 >
                   Voir le CV
                   <span className="material-symbols-outlined text-base">
@@ -261,7 +244,7 @@ export default function CandidateModal({
                   </span>
                 </a>
               ) : (
-                <span className="font-body text-sm italic text-text-muted">
+                <span className="font-text text-[14px] italic" style={{ color: "var(--color-ink-muted-48)" }}>
                   Aucun CV disponible
                 </span>
               )}
@@ -269,44 +252,44 @@ export default function CandidateModal({
           </div>
 
           {motivationText && (
-            <div className="mb-5 border-t border-border pt-5">
+            <div className="mb-5 border-t pt-5" style={{ borderColor: "var(--color-divider-soft)" }}>
               <div className="mb-2 flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg text-text-muted">
+                <span className="material-symbols-outlined text-lg" style={{ color: "var(--color-ink-muted-48)" }}>
                   description
                 </span>
-                <span className="font-body text-sm font-medium text-text-primary">
+                <span className="font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>
                   Lettre de motivation
                 </span>
               </div>
-              <div className="max-h-56 overflow-y-auto rounded-xl border border-border bg-bg-soft/50 px-4 py-3">
-                <p className="whitespace-pre-wrap font-body text-sm leading-relaxed text-text-primary">
+              <div className="max-h-56 overflow-y-auto rounded-[var(--rounded-sm)] border px-4 py-3" style={{ borderColor: "var(--color-hairline)", backgroundColor: "var(--color-canvas-parchment)" }}>
+                <p className="whitespace-pre-wrap font-text text-[14px] leading-relaxed" style={{ color: "var(--color-ink)" }}>
                   {motivationText}
                 </p>
               </div>
             </div>
           )}
 
-          <div className="mb-2 border-t border-border pt-5">
+          <div className="mb-2 border-t pt-5" style={{ borderColor: "var(--color-divider-soft)" }}>
             <div className="mb-3 flex items-center gap-2">
-              <span className="material-symbols-outlined text-lg text-text-muted">
+              <span className="material-symbols-outlined text-lg" style={{ color: "var(--color-ink-muted-48)" }}>
                 psychology
               </span>
-              <span className="font-body text-sm font-medium text-text-primary">
+              <span className="font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>
                 Analyse IA pour le RH
               </span>
             </div>
 
             {!hasIaInsights ? (
-              <div className="rounded-xl border border-border bg-bg-soft/40 px-4 py-3">
-                <p className="font-body text-sm text-text-secondary">
+              <div className="rounded-[var(--rounded-sm)] border px-4 py-3" style={{ borderColor: "var(--color-hairline)", backgroundColor: "var(--color-canvas-parchment)" }}>
+                <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
                   Rapport IA indisponible pour le moment. Le score peut arriver apres quelques secondes.
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
                 {detailRows.length > 0 && (
-                  <div className="rounded-xl border border-border bg-white px-4 py-3">
-                    <p className="mb-3 font-body text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  <div className="rounded-[var(--rounded-sm)] border px-4 py-3" style={{ borderColor: "var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}>
+                    <p className="mb-3 font-text text-[12px] font-semibold uppercase tracking-wide" style={{ color: "var(--color-ink-muted-48)" }}>
                       Score detaille par dimension
                     </p>
                     <div className="space-y-3">
@@ -314,21 +297,21 @@ export default function CandidateModal({
                         return (
                           <div key={row.key}>
                             <div className="mb-1 flex items-center justify-between gap-2">
-                              <span className="font-body text-sm font-medium text-text-primary">
+                              <span className="font-text text-[14px] font-semibold" style={{ color: "var(--color-ink)" }}>
                                 {row.label}
                               </span>
                               <div className="flex items-center gap-2">
                                 {row.weightLabel && (
-                                  <span className="rounded-full bg-bg-soft px-2 py-0.5 font-body text-[11px] text-text-muted">
+                                  <span className="badge-count">
                                     Poids {row.weightLabel}
                                   </span>
                                 )}
-                                <span className={"font-body text-xs font-semibold " + getScoreColor(row.score)}>
+                                <span className={"font-text text-[12px] font-semibold " + getScoreColor(row.score)}>
                                   {row.score === null ? "N/A" : row.score + "/100"}
                                 </span>
                               </div>
                             </div>
-                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                            <div className="h-1.5 w-full overflow-hidden rounded-[var(--rounded-pill)]" style={{ backgroundColor: "var(--color-divider-soft)" }}>
                               <div
                                 className={
                                   "h-full rounded-full " +
@@ -349,20 +332,20 @@ export default function CandidateModal({
                 )}
 
                 {hasCvExtract && (
-                  <div className="rounded-xl border border-border bg-white px-4 py-3">
-                    <p className="mb-3 font-body text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  <div className="rounded-[var(--rounded-sm)] border px-4 py-3" style={{ borderColor: "var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}>
+                    <p className="mb-3 font-text text-[12px] font-semibold uppercase tracking-wide" style={{ color: "var(--color-ink-muted-48)" }}>
                       Extrait CV analyse
                     </p>
 
                     {cvCompetences.length > 0 && (
                       <div className="mb-3">
-                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Competences</p>
+                        <p className="mb-1 font-text text-[12px] font-semibold" style={{ color: "var(--color-ink-muted-48)" }}>Competences</p>
                         <div className="flex flex-wrap gap-1.5">
                           {cvCompetences.map(function (skill, idx) {
                             return (
                               <span
                                 key={"skill-" + idx}
-                                className="rounded-full bg-primary/10 px-2 py-0.5 font-body text-xs text-primary"
+                                className="badge-count"
                               >
                                 {String(skill)}
                               </span>
@@ -374,13 +357,13 @@ export default function CandidateModal({
 
                     {cvLangues.length > 0 && (
                       <div className="mb-3">
-                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Langues</p>
+                        <p className="mb-1 font-text text-[12px] font-semibold" style={{ color: "var(--color-ink-muted-48)" }}>Langues</p>
                         <div className="flex flex-wrap gap-1.5">
                           {cvLangues.map(function (lang, idx) {
                             return (
                               <span
                                 key={"lang-" + idx}
-                                className="rounded-full bg-emerald-100 px-2 py-0.5 font-body text-xs text-emerald-700"
+                                className="badge-inactive"
                               >
                                 {String(lang)}
                               </span>
@@ -392,15 +375,15 @@ export default function CandidateModal({
 
                     {cvExperience && (
                       <div className="mb-3">
-                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Experience</p>
-                        <p className="font-body text-sm text-text-primary">{cvExperience}</p>
+                        <p className="mb-1 font-text text-[12px] font-semibold" style={{ color: "var(--color-ink-muted-48)" }}>Experience</p>
+                        <p className="font-text text-[14px]" style={{ color: "var(--color-ink)" }}>{cvExperience}</p>
                       </div>
                     )}
 
                     {cvFormation && (
                       <div>
-                        <p className="mb-1 font-body text-xs font-medium text-text-secondary">Formation</p>
-                        <p className="font-body text-sm text-text-primary">{cvFormation}</p>
+                        <p className="mb-1 font-text text-[12px] font-semibold" style={{ color: "var(--color-ink-muted-48)" }}>Formation</p>
+                        <p className="font-text text-[14px]" style={{ color: "var(--color-ink)" }}>{cvFormation}</p>
                       </div>
                     )}
                   </div>
@@ -411,11 +394,11 @@ export default function CandidateModal({
 
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-5 py-4">
+        <div className="flex flex-wrap items-center justify-end gap-3 border-t px-5 py-4" style={{ borderColor: "var(--color-divider-soft)" }}>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-border bg-white px-4 py-2.5 font-body text-sm font-medium text-text-secondary transition-all hover:bg-bg-soft"
+            className="button-ghost-pill"
           >
             Annuler
           </button>
@@ -423,7 +406,8 @@ export default function CandidateModal({
             <button
               type="button"
               onClick={onRefuse}
-              className="flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 font-body text-sm font-medium text-white transition-all hover:bg-red-600"
+              className="button-ghost-pill"
+              style={{ color: "#ff3b30", borderColor: "rgba(255,59,48,0.35)" }}
             >
               <span className="material-symbols-outlined text-lg">
                 person_remove
@@ -435,12 +419,7 @@ export default function CandidateModal({
             <button
               type="button"
               onClick={onNextStage}
-              className={
-                "flex items-center gap-2 rounded-xl px-4 py-2.5 font-body text-sm font-medium text-white shadow-md transition-all hover:shadow-lg " +
-                (isFinalStage
-                  ? "bg-secondary shadow-secondary/20 hover:bg-secondary/90"
-                  : "bg-primary shadow-primary/20 hover:bg-primary-dark")
-              }
+              className="button-primary flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-lg">
                 {isFinalStage ? "check" : "arrow_forward"}

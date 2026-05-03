@@ -3,8 +3,6 @@ import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { getAllUsers, deleteUser } from "service/restApiUtilisateurs";
 import { updateUserPassword } from "service/restApiAuthentification";
-import Toast from "components/commun/NotificationToast";
-import { useToast } from "hooks/useNotificationsToast";
 
 var AVATAR_COLORS = [
   "bg-primary",
@@ -73,7 +71,6 @@ export default function ManageUsersModal({ onClose }) {
   });
   const [passwordError, setPasswordError] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
-  const { toast, showToast, hideToast } = useToast();
 
   const loadUsers = useCallback(async function () {
     setLoading(true);
@@ -124,9 +121,8 @@ export default function ManageUsersModal({ onClose }) {
     if (!userId) return;
 
     if (isAdminUser(user)) {
-      showToast(
+      setError(
         "Impossible de supprimer un compte admin. Pour cela, supprimez l'entreprise.",
-        "error"
       );
       return;
     }
@@ -139,11 +135,10 @@ export default function ManageUsersModal({ onClose }) {
           return getUserId(u) !== userId;
         });
       });
-      showToast("Utilisateur supprimé avec succès.", "success");
+      setError(null);
     } catch (err) {
-      showToast(
+      setError(
         err?.response?.data?.message || "Erreur lors de la suppression",
-        "error"
       );
     } finally {
       setDeletingUserId(null);
@@ -179,7 +174,7 @@ export default function ManageUsersModal({ onClose }) {
       await updateUserPassword(userId, passwordForm.password);
       setPasswordUserId(null);
       setPasswordForm({ password: "", confirm: "" });
-      showToast("Mot de passe mis à jour avec succès.", "success");
+      setError(null);
     } catch (err) {
       setPasswordError(
         err?.response?.data?.message ||
@@ -324,9 +319,8 @@ export default function ManageUsersModal({ onClose }) {
                         type="button"
                         onClick={function () {
                           if (isAdmin) {
-                            showToast(
+                            setError(
                               "Impossible de supprimer un compte admin. Supprimez l'entreprise.",
-                              "error"
                             );
                             return;
                           }
@@ -453,10 +447,6 @@ export default function ManageUsersModal({ onClose }) {
           )}
         </div>
       </div>
-
-      {toast && (
-        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
-      )}
     </div>,
     document.body
   );

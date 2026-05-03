@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { API_URL } from "config/api";
 
 const STATUT_CONFIG = {
   "À venir": {
@@ -175,6 +176,8 @@ export default function EntretiensEnLigneTab({ entretiens, loading, error }) {
               entretien.candidature?.candidat?.nom ||
               entretien.candidature?.email ||
               "Candidat";
+            var photoUrl = entretien.candidature?.photo_url || entretien.candidature?.candidat?.photo_url;
+            var avatar = photoUrl ? `${API_URL}/profile-photos/${photoUrl}` : null;
             var poste =
               entretien.poste ||
               entretien.titrePoste ||
@@ -194,6 +197,13 @@ export default function EntretiensEnLigneTab({ entretiens, loading, error }) {
                 <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
                     <div className="mb-2 flex items-center gap-3">
+                      {avatar ? (
+                        <img src={avatar} className="h-10 w-10 rounded-pill object-cover" />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                          {candidatName?.charAt(0)?.toUpperCase()}
+                        </div>
+                      )}
                       <h4 className="font-body text-base font-semibold text-text-primary">
                         {candidatName}
                       </h4>

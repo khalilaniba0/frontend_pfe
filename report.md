@@ -8,7 +8,7 @@ Perimetre: frontend React (CRA) du projet Talentia ATS
 Le frontend Talentia ATS est organise autour de trois espaces fonctionnels:
 - espace public (landing, authentification, offres publiques)
 - espace admin/RH (dashboard, recrutement, offres, entretiens, utilisateurs, parametres)
-- espace candidat (dashboard candidat, candidatures, offres, profil, notifications)
+- espace candidat (dashboard candidat, candidatures, offres, profil)
 
 L'application repose sur un routage structure avec protection d'acces selon le role et le contexte utilisateur.
 
@@ -146,8 +146,6 @@ Les hooks centralisent la logique de chargement, mutation et gestion d'erreurs:
 - src/hooks/useOffresPubliques.js
 - src/hooks/useRecrutement.js
 - src/hooks/useUtilisateurs.js
-- src/hooks/useNotificationsSysteme.js
-- src/hooks/useNotificationsToast.js
 
 ### 6.2 Services API
 
@@ -157,7 +155,6 @@ Les services sont segmentes par domaine dans src/service:
 - restApiCandidature.js
 - restApiEntreprise.js
 - restApiEntretiens.js
-- restApiNotifications.js
 - restApiOffresEntreprise.js
 - restApiOffresPubliques.js
 - restApiRecrutement.js
@@ -168,8 +165,6 @@ Le pattern dominant est un acces API Axios avec authentification par cookies (wi
 
 ## 7. UX transversale
 
-- notifications toast: src/components/commun/NotificationToast.jsx
-- panneau notifications candidat: src/components/Candidat/PanneauNotifications.jsx
 - fond de modal mutualise: src/components/commun/FondModal.jsx
 - composant logo commun reutilise: src/components/commun/LogoMarque.jsx
 
@@ -191,10 +186,6 @@ Le pattern dominant est un acces API Axios avec authentification par cookies (wi
 - gestion principalement locale dans les hooks/pages
 - opportunite de centraliser certaines erreurs globales
 
-5. Notifications
-- polling periodique cote candidat
-- possible latence et cout API si volumetrie elevee
-
 ## 9. Recommandations
 
 ### Court terme
@@ -209,7 +200,7 @@ Le pattern dominant est un acces API Axios avec authentification par cookies (wi
 
 ### Long terme
 - simplifier la coordination des flux d'authentification multi-profils
-- envisager une strategie temps reel pour notifications (si besoin produit)
+- poursuivre l'harmonisation des interactions et retours utilisateur entre les modules
 
 ## 10. Conclusion
 

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import Toast from "components/commun/NotificationToast";
-import { useToast } from "hooks/useNotificationsToast";
 import { connectGoogleCalendar } from "service/restApiEntretiens";
 import { getUserById } from "service/restApiUtilisateurs";
 import { useAuth } from "context/ContexteAuth";
@@ -24,7 +22,6 @@ export default function IntegrationsTab() {
   const { user } = useAuth();
   const [isGoogleConnected, setIsGoogleConnected] = useState(false);
   const [isCheckingConnection, setIsCheckingConnection] = useState(true);
-  const { toast, showToast, hideToast } = useToast();
 
   useEffect(
     function () {
@@ -39,7 +36,6 @@ export default function IntegrationsTab() {
 
         if (connectedFromQuery && isMounted) {
           setIsGoogleConnected(true);
-          showToast("Google Calendar connecté avec succès", "success");
         }
 
         if (connectedFromStoredUser && isMounted) {
@@ -84,12 +80,11 @@ export default function IntegrationsTab() {
         isMounted = false;
       };
     },
-    [location.search, showToast, user?._id, user?.googleTokens],
+    [location.search, user?._id, user?.googleTokens],
   );
 
   const handleDisconnect = function () {
     setIsGoogleConnected(false);
-    showToast("Google Calendar déconnecté localement", "success");
   };
 
   return (
@@ -170,9 +165,6 @@ export default function IntegrationsTab() {
         </div>
       </div>
 
-      {toast && (
-        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
-      )}
     </div>
   );
 }

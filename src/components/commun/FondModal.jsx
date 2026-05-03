@@ -18,7 +18,12 @@ export default function ModalBackdrop({ children, onClose = function () {} }) {
           onClose();
         }
       }}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm md:items-center md:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center p-0 md:items-center md:p-4"
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+      }}
     >
       {children}
     </div>,

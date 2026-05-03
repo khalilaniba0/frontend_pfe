@@ -1,3 +1,4 @@
+const DEFAULT_BACKEND_PORT = "5000";
 const DEFAULT_REQUEST_TIMEOUT_MS = 30000;
 
 function sanitizeUrl(value) {
@@ -7,13 +8,18 @@ function sanitizeUrl(value) {
 
 function resolveApiUrl() {
   var envApiUrl = sanitizeUrl(process.env.REACT_APP_API_URL || "");
-  if (!envApiUrl) {
-    throw new Error(
-      "[api] Missing REACT_APP_API_URL. Define it in your environment variables."
+  if (envApiUrl) {
+    return envApiUrl;
+  }
+
+  if (typeof window !== "undefined" && window.location?.hostname) {
+    var protocol = window.location.protocol || "http:";
+    return sanitizeUrl(
+      protocol + "//" + window.location.hostname + ":" + DEFAULT_BACKEND_PORT
     );
   }
 
-  return envApiUrl;
+  return "";
 }
 
 function resolveTimeoutMs() {
@@ -27,3 +33,10 @@ function resolveTimeoutMs() {
 export const API_URL = resolveApiUrl();
 export const API_ORIGIN = API_URL;
 export const REQUEST_TIMEOUT_MS = resolveTimeoutMs();
+
+if (process.env.NODE_ENV !== "production" && !process.env.REACT_APP_API_URL) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    "[api] REACT_APP_API_URL is not set. Falling back to current host on port 5000"
+  );
+}

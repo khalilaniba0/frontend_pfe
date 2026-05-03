@@ -11,6 +11,7 @@ export default function EntrepriseTab() {
     website: "",
     email: "",
     address: "",
+    apropos: "",
   });
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
@@ -38,6 +39,7 @@ export default function EntrepriseTab() {
             website: data.siteWeb || data.website || "",
             email: data.email || "",
             address: data.adresse || data.address || "",
+            apropos: data.apropos || "",
           });
           if (data.logo) {
             setLogoPreview(resolveEntrepriseMediaUrl(data.logo));
@@ -113,6 +115,7 @@ export default function EntrepriseTab() {
       payload.append("email", formData.email);
       payload.append("adresse", formData.address);
       payload.append("siteWeb", formData.website);
+      payload.append("apropos", formData.apropos);
       if (logoFile) {
         payload.append("logo", logoFile);
       }
@@ -333,6 +336,37 @@ export default function EntrepriseTab() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* À propos */}
+        <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+          <h3 className="mb-4 flex items-center gap-2 font-display text-sm font-semibold text-text-primary">
+            <span className="material-symbols-outlined text-lg text-primary">
+              info
+            </span>
+            À propos de l'entreprise
+          </h3>
+
+          <div>
+            <label
+              htmlFor="apropos"
+              className="mb-1.5 block font-body text-sm font-medium text-text-primary"
+            >
+              Description
+            </label>
+            <textarea
+              id="apropos"
+              name="apropos"
+              rows={5}
+              value={formData.apropos}
+              onChange={handleChange}
+              placeholder="Décrivez votre entreprise, votre culture, vos valeurs..."
+              className={inputClasses + " resize-none"}
+            />
+            <p className="mt-1.5 font-body text-xs text-text-muted">
+              Ce texte sera visible par les candidats sur vos offres d'emploi.
+            </p>
           </div>
         </div>
 

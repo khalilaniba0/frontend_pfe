@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import {
   createRh,
+  inviteRh,
   deleteUser,
   getAllUsers,
   updateUser,
@@ -69,8 +70,8 @@ export function useUsers() {
     setLoading(true);
     setError(null);
     try {
-      const response = await createRh(payload);
-      const createdUser = extractItem(response) || payload;
+      const response = await inviteRh(payload);
+      const createdUser = { ...(extractItem(response) || payload), isInvited: true, _id: Date.now().toString() };
 
       setUsers(function (currentUsers) {
         const createdId = getUserId(createdUser);

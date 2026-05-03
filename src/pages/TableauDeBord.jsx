@@ -4,7 +4,6 @@ import React from "react";
 import StatCard from "components/TableauDeBord/CarteStatistique.jsx";
 import HiringChart from "components/TableauDeBord/GraphiqueRecrutement.jsx";
 import RecentActivity from "components/TableauDeBord/ActiviteRecente.jsx";
-import UpcomingInterviews from "components/TableauDeBord/ProchainsEntretiens.jsx";
 import { useDashboard } from "hooks/useTableauDeBord";
 
 export default function Dashboard() {
@@ -29,11 +28,17 @@ export default function Dashboard() {
     <div className="animate-fade-in">
       <header className="mb-8 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+          <h1
+            className="font-display font-semibold"
+            style={{ fontSize: "34px", lineHeight: 1.47, letterSpacing: "-0.374px", color: "var(--color-ink)" }}
+          >
             Tableau de bord
           </h1>
         </div>
-        <p className="font-body text-sm capitalize text-text-muted">
+        <p
+          className="font-text text-[14px] capitalize"
+          style={{ color: "var(--color-ink-muted-48)" }}
+        >
           {formattedDate}
         </p>
       </header>
@@ -45,37 +50,34 @@ export default function Dashboard() {
               return (
                 <div
                   key={i}
-                  className="animate-pulse rounded-2xl border border-border bg-white p-5"
+                  className="apple-card animate-pulse"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="mb-2 h-4 w-24 rounded bg-gray-200"></div>
-                      <div className="mb-2 h-8 w-16 rounded bg-gray-200"></div>
-                      <div className="h-3 w-32 rounded bg-gray-200"></div>
+                      <div className="mb-2 h-4 w-24 rounded" style={{ backgroundColor: "var(--color-divider-soft)" }} />
+                      <div className="mb-2 h-8 w-16 rounded" style={{ backgroundColor: "var(--color-divider-soft)" }} />
+                      <div className="h-3 w-32 rounded" style={{ backgroundColor: "var(--color-divider-soft)" }} />
                     </div>
-                    <div className="h-11 w-11 rounded-xl bg-gray-200"></div>
+                    <div className="h-11 w-11 rounded-[var(--rounded-sm)]" style={{ backgroundColor: "var(--color-divider-soft)" }} />
                   </div>
                 </div>
               );
             })}
           </>
         ) : error ? (
-          <div className="col-span-full rounded-2xl border border-red-200 bg-red-50 p-5">
+          <div className="apple-card col-span-full" style={{ borderColor: "#ff3b30" }}>
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-red-500">
-                error
-              </span>
+              <span className="material-symbols-outlined" style={{ color: "#ff3b30" }}>error</span>
               <div>
-                <p className="font-display text-sm font-semibold text-red-700">
+                <p className="font-display text-[14px] font-semibold" style={{ color: "#ff3b30" }}>
                   Erreur de chargement
                 </p>
-                <p className="font-body text-xs text-red-600">{error}</p>
+                <p className="font-text text-[12px]" style={{ color: "#ff3b30" }}>{error}</p>
                 <button
                   type="button"
-                  onClick={function () {
-                    refetch();
-                  }}
-                  className="mt-2 rounded-lg border border-red-300 bg-white px-3 py-1.5 font-body text-xs font-semibold text-red-700 transition-colors hover:bg-red-100"
+                  onClick={function () { refetch(); }}
+                  className="button-ghost-pill mt-2"
+                  style={{ fontSize: "12px", padding: "6px 16px" }}
                 >
                   Reessayer
                 </button>
@@ -124,7 +126,6 @@ export default function Dashboard() {
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <div className="flex flex-col gap-4 xl:col-span-8">
           <HiringChart data={hiringChart} loading={loading} />
-          <UpcomingInterviews interviews={upcomingInterviews} loading={loading} />
         </div>
         <aside className="xl:col-span-4">
           <RecentActivity candidatures={recentCandidatures} loading={loading} />

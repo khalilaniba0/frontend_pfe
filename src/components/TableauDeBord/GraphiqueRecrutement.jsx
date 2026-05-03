@@ -75,50 +75,60 @@ export default function HiringChart({ data, loading }) {
         chartInstance.current.destroy();
       }
 
+      // Création de dégradés pour un look moderne
+      const gradCandidatures = ctx.createLinearGradient(0, 0, 0, 400);
+      gradCandidatures.addColorStop(0, "rgba(0, 102, 204, 0.3)");
+      gradCandidatures.addColorStop(1, "rgba(0, 102, 204, 0.0)");
+
+      const gradPourvus = ctx.createLinearGradient(0, 0, 0, 400);
+      gradPourvus.addColorStop(0, "rgba(210, 210, 215, 0.4)");
+      gradPourvus.addColorStop(1, "rgba(210, 210, 215, 0.0)");
+
       chartInstance.current = new Chart(ctx, {
-        type: "bar",
+        type: "line",
         data: {
           labels: chartData.labels,
           datasets: [
             {
-              type: "bar",
+              type: "line",
               label: "Candidatures reçues",
               data: chartData.candidatures,
-              backgroundColor: "#13c8ec26",
-              borderColor: "#13c8ec",
-              borderWidth: 2,
-              borderRadius: 8,
-              borderSkipped: false,
+              borderColor: "#0066cc",
+              backgroundColor: gradCandidatures,
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4, // Courbe douce
+              pointRadius: 0,
+              pointHoverRadius: 6,
               yAxisID: "y",
-              barPercentage: 0.55,
-              categoryPercentage: 0.6,
             },
             {
-              type: "bar",
+              type: "line",
               label: "Postes pourvus",
               data: chartData.pourvus,
-              backgroundColor: "#36d1bc26",
-              borderColor: "#36d1bc",
-              borderWidth: 2,
-              borderRadius: 8,
-              borderSkipped: false,
+              borderColor: "#d2d2d7",
+              backgroundColor: gradPourvus,
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4, // Courbe douce
+              pointRadius: 0,
+              pointHoverRadius: 6,
               yAxisID: "y",
-              barPercentage: 0.55,
-              categoryPercentage: 0.6,
             },
             {
               type: "line",
               label: "Taux de conversion %",
               data: chartData.tauxConversion,
-              borderColor: "#0b61f5",
-              backgroundColor: "#0b61f515",
-              borderWidth: 2.5,
-              pointBackgroundColor: "#0b61f5",
-              pointBorderColor: "#fff",
+              borderColor: "#7a7a7a",
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              borderDash: [5, 5], // Ligne pointillée
+              pointBackgroundColor: "#fff",
+              pointBorderColor: "#7a7a7a",
               pointBorderWidth: 2,
-              pointRadius: 5,
-              pointHoverRadius: 7,
-              fill: true,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              fill: false,
               tension: 0.4,
               yAxisID: "y2",
             },
@@ -127,33 +137,35 @@ export default function HiringChart({ data, loading }) {
         options: {
           maintainAspectRatio: false,
           responsive: true,
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
           plugins: {
             legend: {
               display: false,
             },
             tooltip: {
-              mode: "index",
-              intersect: false,
-              backgroundColor: "#0f172a",
+              backgroundColor: "rgba(15, 23, 42, 0.9)",
               titleFont: {
-                family: "DM Sans",
-                size: 12,
+                family: "SF Pro Text, system-ui, sans-serif",
+                size: 13,
                 weight: "600",
               },
               bodyFont: {
-                family: "DM Sans",
-                size: 11,
+                family: "SF Pro Text, system-ui, sans-serif",
+                size: 12,
               },
-              padding: 10,
-              cornerRadius: 8,
+              padding: 12,
+              cornerRadius: 12,
               displayColors: true,
-              boxWidth: 8,
-              boxHeight: 8,
+              boxWidth: 10,
+              boxHeight: 10,
               boxPadding: 4,
               callbacks: {
                 label: function (context) {
                   if (context.dataset.label === "Taux de conversion %") {
-                    return " Taux de conversion : " + context.parsed.y + "%";
+                    return " " + context.dataset.label + " : " + context.parsed.y + "%";
                   }
                   return " " + context.dataset.label + " : " + context.parsed.y;
                 },
@@ -164,12 +176,13 @@ export default function HiringChart({ data, loading }) {
             x: {
               grid: { display: false },
               ticks: {
-                color: "#64748b",
+                color: "#94a3b8",
                 font: {
-                  family: "DM Sans",
+                  family: "SF Pro Text, system-ui, sans-serif",
                   size: 12,
                   weight: "500",
                 },
+                padding: 10,
               },
               border: { display: false },
             },
@@ -177,13 +190,16 @@ export default function HiringChart({ data, loading }) {
               type: "linear",
               position: "left",
               beginAtZero: true,
-              grid: { color: "#f1f5f9" },
-              border: { display: false },
+              grid: { 
+                color: "#f8fafc",
+                drawBorder: false,
+              },
+              border: { display: false, dash: [4, 4] },
               ticks: {
                 color: "#94a3b8",
-                font: { family: "DM Sans", size: 11 },
-                stepSize: 20,
-                padding: 8,
+                font: { family: "Inter, sans-serif", size: 11 },
+                padding: 12,
+                maxTicksLimit: 6,
               },
             },
             y2: {
@@ -191,14 +207,15 @@ export default function HiringChart({ data, loading }) {
               position: "right",
               beginAtZero: true,
               max: 100,
-              grid: { drawOnChartArea: false },
+              grid: { display: false },
               border: { display: false },
               ticks: {
-                color: "#0b61f5",
-                font: { family: "DM Sans", size: 11 },
+                color: "#cbd5e1",
+                font: { family: "Inter, sans-serif", size: 11 },
                 callback: function (value) {
                   return value + "%";
                 },
+                padding: 12,
               },
             },
           },
@@ -215,49 +232,43 @@ export default function HiringChart({ data, loading }) {
   );
 
   return (
-    <div className="flex h-64 sm:h-80 lg:h-[380px] flex-col rounded-2xl border border-border bg-white p-5 shadow-sm">
+    <div className="apple-card flex h-64 sm:h-80 lg:h-[380px] flex-col">
       <header className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h3 className="font-display text-base font-semibold tracking-tight text-text-primary sm:text-lg">
+          <h3 className="font-text text-[17px] font-semibold" style={{ color: 'var(--color-ink)', letterSpacing: '-0.374px' }}>
             Aperçu des recrutements
           </h3>
-          <p className="mt-0.5 font-body text-xs text-text-muted">
+          <p className="mt-0.5 font-text text-[12px]" style={{ color: 'var(--color-ink-muted-48)' }}>
             6 derniers mois
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-sm bg-primary"></span>
-            <span className="font-body text-xs font-medium text-text-secondary">
-              Candidatures
-            </span>
+            <span className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: '#0066cc' }}></span>
+            <span className="font-text text-[12px]" style={{ color: 'var(--color-ink-muted-48)' }}>Candidatures</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-sm bg-secondary"></span>
-            <span className="font-body text-xs font-medium text-text-secondary">
-              Pourvus
-            </span>
+            <span className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: '#d2d2d7' }}></span>
+            <span className="font-text text-[12px]" style={{ color: 'var(--color-ink-muted-48)' }}>Pourvus</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-sm bg-blue-500"></span>
-            <span className="font-body text-xs font-medium text-text-secondary">
-              Conversion
-            </span>
+            <span className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: '#7a7a7a' }}></span>
+            <span className="font-text text-[12px]" style={{ color: 'var(--color-ink-muted-48)' }}>Conversion</span>
           </div>
         </div>
       </header>
 
       {/* KPI Pills */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-light px-3 py-1.5 font-display text-xs font-semibold text-primary">
+        <span className="badge-count inline-flex items-center gap-1.5 font-text text-[12px] font-semibold" style={{ color: 'var(--color-primary)' }}>
           <span className="material-symbols-outlined text-sm">inbox</span>
           {loading ? "…" : totalCandidatures} Candidatures
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-light px-3 py-1.5 font-display text-xs font-semibold text-secondary">
+        <span className="badge-count inline-flex items-center gap-1.5 font-text text-[12px] font-semibold" style={{ color: 'var(--color-ink-muted-48)' }}>
           <span className="material-symbols-outlined text-sm">check_circle</span>
           {loading ? "…" : totalPourvus} Pourvus
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 font-display text-xs font-semibold text-blue-600">
+        <span className="badge-count inline-flex items-center gap-1.5 font-text text-[12px] font-semibold" style={{ color: 'var(--color-ink-muted-80)' }}>
           <span className="material-symbols-outlined text-sm">trending_up</span>
           {loading ? "…" : tauxMoyen}% Conversion
         </span>

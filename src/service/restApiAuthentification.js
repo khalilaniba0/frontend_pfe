@@ -5,6 +5,11 @@ import {
     PUBLIC_REQUEST_CONFIG,
 } from "./requestConfig";
 
+const PUBLIC_NO_CREDENTIALS_CONFIG = Object.freeze({
+    ...PUBLIC_REQUEST_CONFIG,
+    withCredentials: false,
+});
+
 export async function loginUser(email, password) {
     return await axios.post(
         `${API_URL}/user/login`,
@@ -41,5 +46,21 @@ export async function updateUserPassword(userId, newPassword) {
         `${API_URL}/user/updateUser/${userId}`,
         { newPassword },
         AUTH_REQUEST_CONFIG
+    );
+}
+
+export async function demanderResetMotDePasse(email) {
+    return await axios.post(
+        `${API_URL}/user/forgot-password`,
+        { email },
+        PUBLIC_NO_CREDENTIALS_CONFIG
+    );
+}
+
+export async function resetMotDePasse(token, password) {
+    return await axios.post(
+        `${API_URL}/user/reset-password/${token}`,
+        { password },
+        PUBLIC_NO_CREDENTIALS_CONFIG
     );
 }

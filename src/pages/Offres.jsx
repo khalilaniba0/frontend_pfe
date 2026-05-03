@@ -2,9 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import JobStatCard from "components/Offres/CarteStatistiqueOffre";
 import JobsTable from "components/Offres/TableauOffres";
-import Toast from "components/commun/NotificationToast";
 import ModalBackdrop from "components/commun/FondModal";
-import { useToast } from "hooks/useNotificationsToast";
 import { useJobs } from "hooks/useOffresEntreprise";
 import { getCandidaturesByOffre } from "service/restApiRecrutement";
 
@@ -71,7 +69,6 @@ export default function Jobs() {
     removeJob,
     toggleStatus,
   } = useJobs();
-  const { toast, showToast, hideToast } = useToast();
 
   useEffect(
     function () {
@@ -133,8 +130,6 @@ export default function Jobs() {
   );
 
   const handleCreateSuccess = function (createdOffre) {
-    const title = getOffreTitle(createdOffre);
-    showToast(`"${title}" a ete ajoutee a vos offres actives.`, "success");
     setShowCreateModal(false);
     refetch({ silent: true });
   };
@@ -144,10 +139,6 @@ export default function Jobs() {
       await toggleStatus(id);
     } catch (err) {
       console.error("Toggle status failed:", err);
-      showToast(
-        err?.response?.data?.message || "Erreur lors du changement de statut",
-        "error"
-      );
     }
   };
 
@@ -177,14 +168,9 @@ export default function Jobs() {
     setIsDeleteSubmitting(true);
     try {
       await removeJob(deleteOfferTarget.id);
-      showToast("Offre supprimee.", "success");
       setDeleteOfferTarget(null);
     } catch (err) {
       console.error("Delete failed:", err);
-      showToast(
-        err?.response?.data?.message || err?.message || "Erreur lors de la suppression",
-        "error"
-      );
     } finally {
       setIsDeleteSubmitting(false);
     }
@@ -267,7 +253,7 @@ export default function Jobs() {
     <div className="animate-fade-in space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-display text-xl font-bold tracking-tight text-text-primary md:text-3xl lg:text-4xl">
+          <h1 className="font-display font-semibold" style={{ fontSize: '34px', lineHeight: 1.47, letterSpacing: '-0.374px', color: 'var(--color-ink)' }}>
             Gestion des Offres
           </h1>
         </div>
@@ -277,7 +263,7 @@ export default function Jobs() {
             onClick={function () {
               setShowCreateModal(true);
             }}
-            className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all duration-150 hover:bg-primary-dark hover:shadow-lg"
+            className="button-primary"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Créer une offre
@@ -291,32 +277,17 @@ export default function Jobs() {
         })}
       </section>
 
-      <div className="relative max-w-md">
-        <span className="material-symbols-outlined pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xl text-text-muted">
-          search
-        </span>
-        <input
-          type="text"
-          value={search}
-          onChange={function (e) {
-            setSearch(e.target.value);
-          }}
-          placeholder="Rechercher par titre, département ou localisation..."
-          className="w-full rounded-xl border border-border bg-white py-2.5 pl-11 pr-4 font-body text-sm text-text-primary shadow-sm transition-all duration-150 placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-        />
-      </div>
-
       {loading ? (
-        <section className="overflow-hidden rounded-2xl border border-border bg-white px-6 py-12 text-center shadow-sm">
-          <p className="font-body text-sm text-text-secondary">Chargement...</p>
+        <section className="apple-card overflow-hidden px-6 py-12 text-center">
+          <p className="font-text text-[14px]" style={{ color: 'var(--color-ink-muted-48)' }}>Chargement...</p>
         </section>
       ) : error ? (
-        <section className="overflow-hidden rounded-2xl border border-border bg-white px-6 py-12 text-center shadow-sm">
-          <p className="font-body text-sm text-red-500">{error}</p>
+        <section className="apple-card overflow-hidden px-6 py-12 text-center">
+          <p className="font-text text-[14px]" style={{ color: '#ff3b30' }}>{error}</p>
         </section>
       ) : offres.length === 0 ? (
-        <section className="overflow-hidden rounded-2xl border border-border bg-white px-6 py-12 text-center shadow-sm">
-          <p className="font-body text-sm text-text-secondary">Aucune offre disponible</p>
+        <section className="apple-card overflow-hidden px-6 py-12 text-center">
+          <p className="font-text text-[14px]" style={{ color: 'var(--color-ink-muted-48)' }}>Aucune offre disponible</p>
         </section>
       ) : (
         <JobsTable
@@ -324,6 +295,8 @@ export default function Jobs() {
           total={jobs.length}
           onToggleStatus={handleToggleStatus}
           onDelete={handleDelete}
+          search={search}
+          onSearchChange={setSearch}
         />
       )}
 
@@ -332,7 +305,8 @@ export default function Jobs() {
       {deleteOfferTarget && (
         <ModalBackdrop onClose={handleCloseDeleteModal}>
           <div
-            className="w-full rounded-t-2xl border border-border bg-white p-6 shadow-2xl md:max-w-md md:rounded-2xl"
+            className="apple-card modal-animate w-full p-6 md:max-w-md"
+            style={{ borderRadius: 'var(--rounded-lg)' }}
             onClick={function (e) {
               e.stopPropagation();
             }}
@@ -344,16 +318,16 @@ export default function Jobs() {
                 </span>
               </div>
               <div>
-                <h3 className="font-display text-base font-semibold text-text-primary">
+                <h3 className="font-display text-[17px] font-semibold" style={{ color: 'var(--color-ink)' }}>
                   Confirmer la suppression
                 </h3>
-                <p className="mt-1 font-body text-sm text-text-secondary">
+                <p className="mt-1 font-text text-[14px]" style={{ color: 'var(--color-ink-muted-48)' }}>
                   Cette action est irreversible.
                 </p>
               </div>
             </div>
 
-            <p className="rounded-xl bg-bg-soft px-4 py-3 font-body text-sm text-text-primary">
+            <p className="rounded-[var(--rounded-sm)] px-4 py-3 font-text text-[14px]" style={{ backgroundColor: 'var(--color-canvas-parchment)', color: 'var(--color-ink)' }}>
               Supprimer l'offre
               <span className="font-semibold"> {deleteOfferTarget.title || ""} </span>?
             </p>
@@ -363,7 +337,8 @@ export default function Jobs() {
                 type="button"
                 onClick={handleCloseDeleteModal}
                 disabled={isDeleteSubmitting}
-                className="rounded-lg border border-border px-4 py-2 font-body text-sm text-text-secondary transition-colors hover:bg-bg-soft disabled:opacity-60"
+                className="button-ghost-pill"
+                style={{ fontSize: '14px', padding: '10px 20px' }}
               >
                 Annuler
               </button>
@@ -371,7 +346,8 @@ export default function Jobs() {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={isDeleteSubmitting}
-                className="rounded-lg bg-red-500 px-4 py-2 font-body text-sm text-white transition-colors hover:bg-red-600 disabled:opacity-60"
+                className="button-primary"
+                style={{ backgroundColor: '#ff3b30', fontSize: '14px', padding: '10px 20px' }}
               >
                 {isDeleteSubmitting ? "Suppression..." : "Supprimer"}
               </button>
@@ -389,9 +365,6 @@ export default function Jobs() {
         />
       )}
 
-      {toast && (
-        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
-      )}
     </div>
   );
 }

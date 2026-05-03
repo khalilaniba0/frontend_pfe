@@ -29,19 +29,6 @@ export default function CandidateCard({
     .join("")
     .toUpperCase();
 
-  const gradients = [
-    "from-pink-400 to-rose-500",
-    "from-violet-400 to-purple-500",
-    "from-sky-400 to-blue-500",
-    "from-emerald-400 to-teal-500",
-    "from-amber-400 to-orange-500",
-  ];
-
-  const gradientIndex =
-    name.split("").reduce(function (acc, char) {
-      return acc + char.charCodeAt(0);
-    }, 0) % gradients.length;
-
   function handleCardClick(e) {
     var target = e.target;
     var isInteractive = false;
@@ -78,9 +65,13 @@ export default function CandidateCard({
   return (
     <div
       className={
-        "group cursor-pointer rounded-xl border border-border bg-white p-3.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md " +
-        (isDragging ? "opacity-50" : "")
+        "group card-animate cursor-pointer rounded-[var(--rounded-lg)] border p-4 transition-transform duration-150 hover:-translate-y-0.5 " +
+        (isDragging ? "dragging" : "")
       }
+      style={{
+        borderColor: "var(--color-hairline)",
+        backgroundColor: "var(--color-canvas)",
+      }}
       draggable={draggable}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
@@ -90,44 +81,45 @@ export default function CandidateCard({
         {avatar ? (
           <img
             alt={name}
-            className="h-10 w-10 rounded-xl bg-gray-100 object-cover"
+            className="avatar-image h-10 w-10 rounded-[var(--rounded-pill)] bg-white object-cover"
             src={avatar}
           />
         ) : (
           <div
-            className={
-              "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br font-body text-xs font-bold text-white shadow-sm " +
-              gradients[gradientIndex]
-            }
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[var(--rounded-pill)] font-text text-xs font-semibold"
+            style={{
+              backgroundColor: "var(--color-canvas-parchment)",
+              color: "var(--color-ink)",
+            }}
           >
             {initials}
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="truncate font-body text-sm font-semibold text-text-primary">
+          <p className="truncate font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>
             {name}
           </p>
-          <p className="truncate font-body text-xs text-text-secondary">
+          <p className="truncate font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
             {role}
           </p>
         </div>
       </div>
 
       {scoreStatus === "pending" ? (
-        <div className="mb-3 rounded-lg border border-dashed border-amber-200 bg-amber-50 px-2.5 py-2">
-          <p className="font-body text-xs font-medium text-amber-700">
+        <div className="mb-3 rounded-[var(--rounded-sm)] border border-dashed px-3 py-2" style={{ borderColor: "var(--color-hairline)", backgroundColor: "var(--color-canvas-parchment)" }}>
+          <p className="font-text text-[12px]" style={{ color: "var(--color-ink-muted-48)" }}>
             Analyse IA en cours...
           </p>
         </div>
       ) : score !== undefined && score !== null ? (
         <div className="mb-3">
           <div className="mb-1 flex items-center justify-between">
-            <span className="font-body text-xs text-text-muted">Score IA</span>
-            <span className={"font-body text-xs font-semibold tabular-nums " + (score <= 40 ? "text-red-600" : score <= 69 ? "text-amber-600" : "text-emerald-600")}>
+            <span className="font-text text-[12px]" style={{ color: "var(--color-ink-muted-48)" }}>Score IA</span>
+            <span className={"font-text text-[12px] font-semibold tabular-nums " + (score <= 40 ? "text-red-600" : score <= 69 ? "text-amber-600" : "text-emerald-600")}>
               {score}
             </span>
           </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+          <div className="h-1.5 w-full overflow-hidden rounded-[var(--rounded-pill)]" style={{ backgroundColor: "var(--color-divider-soft)" }}>
             <div
               className={"h-full rounded-full transition-all duration-300 " + getScoreColor(score)}
               style={{ width: score + "%" }}
@@ -137,18 +129,18 @@ export default function CandidateCard({
       ) : null}
 
       {hasIaReport && (
-        <div className="mb-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 font-body text-[11px] font-medium text-primary">
+        <div className="badge-count mb-2 inline-flex items-center gap-1">
           <span className="material-symbols-outlined text-sm">psychology</span>
           Rapport IA disponible
         </div>
       )}
 
-      <div className="flex items-center border-t border-border pt-2.5">
-        <div className="flex items-center gap-1.5 text-text-muted">
+      <div className="flex items-center border-t pt-2.5" style={{ borderColor: "var(--color-divider-soft)" }}>
+        <div className="flex items-center gap-1.5" style={{ color: "var(--color-ink-muted-48)" }}>
           <span className="material-symbols-outlined text-sm">
             calendar_today
           </span>
-          <span className="font-body text-xs">{appliedDate}</span>
+          <span className="font-text text-[12px]">{appliedDate}</span>
         </div>
       </div>
     </div>

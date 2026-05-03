@@ -67,7 +67,6 @@ export default function PipelineColumn({
     >
       <div className="mb-3 flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <span className={"h-2.5 w-2.5 rounded-sm " + color}></span>
           <span className="font-body text-sm font-semibold text-text-primary">
             {title}
           </span>

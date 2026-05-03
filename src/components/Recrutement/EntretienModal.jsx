@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ModalBackdrop from "../commun/FondModal";
+import { API_URL } from "config/api";
 
 var ENTRETIEN_TYPES = ["Présentiel", "Visio", "Téléphone"];
 
@@ -69,6 +70,10 @@ export default function EntretienModal({ candidate, onConfirm, onCancel }) {
 
   if (!candidate) return null;
 
+  var candidateName = candidate.name || candidate.nom || "Candidat";
+  var photoUrl = candidate.photo_url || candidate.candidat?.photo_url;
+  var avatar = photoUrl ? `${API_URL}/profile-photos/${photoUrl}` : null;
+
   return (
     <ModalBackdrop onClose={onCancel}>
       <div
@@ -81,9 +86,18 @@ export default function EntretienModal({ candidate, onConfirm, onCancel }) {
           <h2 className="font-display text-lg font-bold text-text-primary">
             Planifier un entretien
           </h2>
-          <p className="mt-1 font-body text-sm text-text-secondary">
-            {candidate.name}
-          </p>
+          <div className="mt-1 flex items-center gap-2">
+            {avatar ? (
+              <img src={avatar} className="h-8 w-8 rounded-full object-cover" />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                {candidateName?.charAt(0)?.toUpperCase()}
+              </div>
+            )}
+            <p className="font-body text-sm text-text-secondary">
+              {candidateName}
+            </p>
+          </div>
         </div>
 
         <div className="space-y-4 px-5 py-5">

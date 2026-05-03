@@ -1,6 +1,6 @@
 // Lignes : 246 | Couche : page | Depend de : useOffres, JobCard, Navbar
 import React, { useMemo, useState } from "react";
-import { Search, Grid, List as ListIcon } from "lucide-react";
+import { Grid, List as ListIcon } from "lucide-react";
 
 import JobCard from "components/Candidat/CarteOffre.jsx";
 import Navbar from "components/miseEnPage/BarreNavigation.jsx";
@@ -29,59 +29,73 @@ export default function JobList() {
   );
 
   return (
-    <div className="min-h-screen bg-bg-page font-body text-slate-900">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: "var(--color-canvas-parchment)",
+        color: "var(--color-ink)",
+        fontFamily: "var(--font-text)",
+      }}
+    >
       <Navbar />
 
       <main className="px-4 pb-16 pt-24 md:px-8">
         <section className="mx-auto w-full max-w-6xl">
-          <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary-light via-bg-page to-sky-50 p-8 shadow-sm md:p-12">
-            <div className="pointer-events-none absolute -left-14 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(19,200,236,0.15)_0%,transparent_70%)]" />
-            <div className="pointer-events-none absolute -bottom-24 right-0 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(58,123,213,0.15)_0%,transparent_70%)]" />
-
-            <h1 className="max-w-2xl font-display text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
+          <div
+            className="apple-panel p-8 md:p-10"
+            style={{ backgroundColor: "var(--color-canvas)" }}
+          >
+            <h1
+              className="max-w-2xl font-display"
+              style={{
+                fontSize: "clamp(34px, 4.2vw, 40px)",
+                fontWeight: 600,
+                lineHeight: 1.1,
+                color: "var(--color-ink)",
+              }}
+            >
               Trouvez votre prochain défi professionnel.
             </h1>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 md:text-base">
+            <p
+              className="mt-4 max-w-xl font-text text-[17px]"
+              style={{ color: "var(--color-ink-muted-80)", lineHeight: 1.47 }}
+            >
               Explorez des opportunités exclusives parmi les meilleures entreprises
               technologiques et créatives.
             </p>
 
-            <form
-              className="mt-8 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm md:flex-row"
-              onSubmit={function (event) {
-                event.preventDefault();
-              }}
-            >
-              <label className="flex flex-1 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 md:border-r md:border-slate-100">
-                <Search size={18} className="text-slate-400" />
+            <div className="mt-8 flex flex-col gap-3 md:flex-row">
+              <label className="flex-1">
                 <input
-                  type="text"
+                  type="search"
                   value={searchTerm}
                   onChange={function (event) {
                     setSearchTerm(event.target.value);
                   }}
                   placeholder="Poste, mot-clé..."
-                  className="w-full border-none p-0 text-sm text-slate-700 placeholder:text-slate-400 focus:ring-0"
+                  className="apple-search"
                 />
               </label>
-
-              <button
-                type="submit"
-                className="rounded-xl bg-gradient-to-r from-[#00D2FF] to-[#3a7bd5] px-7 py-3 text-sm font-semibold text-white shadow-sm shadow-primary/25 transition-all duration-200 hover:shadow-md hover:brightness-105"
-              >
-                Rechercher
-              </button>
-            </form>
+            </div>
           </div>
         </section>
 
         <section id="offres" className="mx-auto mt-10 w-full max-w-6xl">
           <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900">
+              <h2
+                className="font-display"
+                style={{
+                  fontSize: "34px",
+                  fontWeight: 600,
+                  lineHeight: 1.47,
+                  letterSpacing: "-0.374px",
+                  color: "var(--color-ink)",
+                }}
+              >
                 Dernières offres
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
                 {loading
                   ? "Chargement des postes..."
                   : `${filteredOffres.length} poste(s) disponible(s) actuellement`}
@@ -89,18 +103,22 @@ export default function JobList() {
             </div>
 
             <div className="flex w-full items-center gap-3 md:w-auto">
-              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+              <div
+                className="inline-flex rounded-[var(--rounded-pill)] p-1"
+                style={{ backgroundColor: "var(--color-canvas)", border: "1px solid var(--color-hairline)" }}
+              >
                 <button
                   type="button"
                   onClick={function () {
                     setViewMode("grid");
                   }}
                   className={
-                    "rounded-lg p-2 transition-colors " +
+                    "chip-option rounded-[var(--rounded-pill)] p-2 " +
                     (viewMode === "grid"
-                      ? "bg-primary-light text-primary-dark"
-                      : "text-slate-400 hover:bg-slate-50")
+                      ? "active"
+                      : "")
                   }
+                  aria-label="Affichage grille"
                 >
                   <Grid size={18} />
                 </button>
@@ -109,12 +127,8 @@ export default function JobList() {
                   onClick={function () {
                     setViewMode("list");
                   }}
-                  className={
-                    "rounded-lg p-2 transition-colors " +
-                    (viewMode === "list"
-                      ? "bg-primary-light text-primary-dark"
-                      : "text-slate-400 hover:bg-slate-50")
-                  }
+                  className={"chip-option rounded-[var(--rounded-pill)] p-2 " + (viewMode === "list" ? "active" : "")}
+                  aria-label="Affichage liste"
                 >
                   <ListIcon size={18} />
                 </button>
@@ -123,7 +137,7 @@ export default function JobList() {
           </div>
 
           {error ? (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="apple-card px-4 py-3" style={{ borderColor: "#ff3b30", color: "#ff3b30" }}>
               <div className="flex items-center justify-between gap-3">
                 <span>{error}</span>
                 <button
@@ -131,7 +145,8 @@ export default function JobList() {
                   onClick={function () {
                     refetch();
                   }}
-                  className="rounded-lg border border-red-300 bg-white px-3 py-1 font-semibold text-red-700 transition-colors hover:bg-red-100"
+                  className="button-ghost-pill"
+                  style={{ fontSize: "14px", padding: "8px 14px" }}
                 >
                   Reessayer
                 </button>
@@ -140,11 +155,11 @@ export default function JobList() {
           ) : null}
 
           {!loading && !error && filteredOffres.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center shadow-sm">
-              <p className="font-medium text-slate-700">
+            <div className="apple-card px-5 py-10 text-center">
+              <p className="font-text text-[17px]" style={{ color: "var(--color-ink)" }}>
                 Aucune offre ne correspond à votre recherche.
               </p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
                 Essayez d'enlever un filtre ou de changer vos mots-clés.
               </p>
             </div>
@@ -162,7 +177,8 @@ export default function JobList() {
                   return (
                     <div
                       key={`skeleton-${index}`}
-                      className="h-44 animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm"
+                      className="h-44 animate-pulse rounded-[var(--rounded-lg)]"
+                      style={{ border: "1px solid var(--color-hairline)", backgroundColor: "var(--color-canvas)" }}
                     />
                   );
                 })

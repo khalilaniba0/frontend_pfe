@@ -1,15 +1,8 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "config/api";
 import { ROUTES } from "constants/routes";
-
-var GRADIENTS = [
-  "from-pink-400 to-rose-500",
-  "from-sky-400 to-blue-500",
-  "from-amber-400 to-orange-500",
-  "from-emerald-400 to-teal-500",
-  "from-violet-400 to-purple-500",
-];
 
 function getInitials(name) {
   if (!name) return "??";
@@ -36,13 +29,13 @@ function getTypeLabel(type) {
 var getTypeStyle = function (type) {
   switch (type) {
     case "visio":
-      return "bg-indigo-50 text-indigo-600";
+      return "badge-pending";
     case "telephone":
-      return "bg-secondary-light text-secondary";
+      return "badge-inactive";
     case "presentiel":
-      return "bg-primary-light text-primary";
+      return "badge-active";
     default:
-      return "bg-gray-100 text-gray-600";
+      return "badge-inactive";
   }
 };
 
@@ -70,6 +63,8 @@ export default function UpcomingInterviews({ interviews, loading }) {
           hour: "2-digit",
           minute: "2-digit",
         });
+        var photoUrl = e.candidature?.photo_url || e.candidature?.candidat?.photo_url;
+        var avatar = photoUrl ? `${API_URL}/profile-photos/${photoUrl}` : null;
 
         return {
           name: candidatName,
@@ -78,7 +73,7 @@ export default function UpcomingInterviews({ interviews, loading }) {
           type: getTypeLabel(e.typeEntretien || e.type_entretien),
           rawType: e.typeEntretien || e.type_entretien,
           initials: getInitials(candidatName),
-          gradient: GRADIENTS[index % GRADIENTS.length],
+          avatar: avatar,
         };
       });
     },
@@ -86,17 +81,17 @@ export default function UpcomingInterviews({ interviews, loading }) {
   );
 
   return (
-    <div className="rounded-2xl border border-border bg-white p-5 shadow-sm">
+    <div className="rounded-[var(--rounded-lg)] border bg-white p-6" style={{ borderColor: "var(--color-hairline)" }}>
       <header className="mb-4 flex items-center justify-between">
         <div>
-          <h3 className="font-display text-lg font-semibold tracking-tight text-text-primary">
+          <h3 className="font-display text-[21px] font-semibold" style={{ color: "var(--color-ink)", letterSpacing: "0.231px" }}>
             Entretiens à venir
           </h3>
         </div>
         <button
           type="button"
           onClick={goToInterviewsCalendar}
-          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 font-body text-xs font-medium text-text-secondary transition-colors duration-150 hover:border-primary hover:text-primary"
+          className="chip-option"
         >
           <i className="fas fa-calendar-alt text-[10px]"></i>
           Calendrier
@@ -105,11 +100,11 @@ export default function UpcomingInterviews({ interviews, loading }) {
 
       {loading ? (
         <div className="py-8 text-center">
-          <p className="font-body text-sm text-text-muted">Chargement...</p>
+          <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>Chargement...</p>
         </div>
       ) : uiInterviews.length === 0 ? (
         <div className="py-8 text-center">
-          <p className="font-body text-sm text-text-muted">
+          <p className="font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
             Aucun entretien à venir
           </p>
         </div>
@@ -122,40 +117,44 @@ export default function UpcomingInterviews({ interviews, loading }) {
                 className={
                   "group flex items-center gap-4 py-3.5 transition-colors duration-150 " +
                   (index < uiInterviews.length - 1
-                    ? "border-b border-border"
+                    ? "border-b"
                     : "")
                 }
+                style={index < uiInterviews.length - 1 ? { borderColor: "var(--color-divider-soft)" } : undefined}
               >
-                <div
-                  className={
-                    "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br font-body text-xs font-bold text-white shadow-sm " +
-                    interview.gradient
-                  }
-                >
-                  {interview.initials}
-                </div>
+                {interview.avatar ? (
+                  <img
+                    alt={interview.name}
+                    className="avatar-image h-10 w-10 rounded-[var(--rounded-pill)] bg-white object-cover"
+                    src={interview.avatar}
+                  />
+                ) : (
+                  <div
+                    className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[var(--rounded-pill)] font-text text-xs font-semibold"
+                    style={{ backgroundColor: "var(--color-canvas-parchment)", color: "var(--color-ink)" }}
+                  >
+                    {interview.initials}
+                  </div>
+                )}
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-body text-sm font-semibold text-text-primary">
+                  <p className="truncate font-text text-[17px] font-semibold" style={{ color: "var(--color-ink)" }}>
                     {interview.name}
                   </p>
-                  <p className="truncate font-body text-xs text-text-secondary">
+                  <p className="truncate font-text text-[14px]" style={{ color: "var(--color-ink-muted-48)" }}>
                     {interview.role}
                   </p>
                 </div>
 
                 <span
-                  className={
-                    "hidden rounded-md px-2 py-1 font-body text-xs font-medium sm:inline-block " +
-                    getTypeStyle(interview.rawType)
-                  }
+                  className={"hidden sm:inline-flex " + getTypeStyle(interview.rawType)}
                 >
                   {interview.type}
                 </span>
 
-                <div className="flex items-center gap-1.5 text-text-primary">
-                  <i className="fas fa-clock text-xs text-text-muted"></i>
-                  <span className="font-body text-sm font-semibold tabular-nums">
+                <div className="flex items-center gap-1.5" style={{ color: "var(--color-ink)" }}>
+                  <i className="fas fa-clock text-xs" style={{ color: "var(--color-ink-muted-48)" }}></i>
+                  <span className="font-text text-[14px] font-semibold tabular-nums">
                     {interview.time}
                   </span>
                 </div>
@@ -163,7 +162,8 @@ export default function UpcomingInterviews({ interviews, loading }) {
                 <button
                   type="button"
                   onClick={goToInterviewsCalendar}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted opacity-0 transition-all duration-150 hover:bg-primary-light hover:text-primary group-hover:opacity-100"
+                  className="button-icon-circular opacity-0 group-hover:opacity-100"
+                  style={{ color: "var(--color-ink-muted-48)", width: "32px", height: "32px" }}
                   title="Voir les détails"
                 >
                   <i className="fas fa-chevron-right text-xs"></i>

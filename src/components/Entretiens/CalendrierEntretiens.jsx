@@ -74,7 +74,7 @@ export default function InterviewCalendar({
       cells.push(
         <div
           key={"prev-" + i}
-          className="min-h-[100px] border-t border-border p-2 opacity-30"
+          className="min-h-[80px] xl:min-h-[90px] border-t border-border p-2 opacity-30"
         >
           <span className="font-body text-sm text-text-muted">
             {daysInPrevMonth - i}
@@ -93,7 +93,7 @@ export default function InterviewCalendar({
         <div
           key={day}
           className={
-            "min-h-[100px] border-t border-border p-2 transition-colors duration-150 hover:bg-bg-soft/50 " +
+            "min-h-[80px] xl:min-h-[90px] border-t border-border p-2 transition-colors duration-150 hover:bg-bg-soft/50 " +
             (isToday ? "bg-primary/5" : "")
           }
         >
@@ -149,7 +149,7 @@ export default function InterviewCalendar({
       cells.push(
         <div
           key={"next-" + i}
-          className="min-h-[100px] border-t border-border p-2 opacity-30"
+          className="min-h-[80px] xl:min-h-[90px] border-t border-border p-2 opacity-30"
         >
           <span className="font-body text-sm text-text-muted">{i}</span>
         </div>
@@ -160,8 +160,8 @@ export default function InterviewCalendar({
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="rounded-2xl border border-border bg-white p-4 lg:p-6 shadow-sm">
+      <div className="mb-4 lg:mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
             type="button"

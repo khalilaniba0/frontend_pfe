@@ -128,7 +128,7 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
   return (
     <ModalBackdrop onClose={onClose}>
       <div
-        className="relative flex max-h-[90vh] w-full max-w-lg animate-scale-in flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="relative flex max-h-[90vh] w-full max-w-lg animate-scale-in flex-col overflow-hidden rounded-2xl bg-white"
         onClick={function (e) {
           e.stopPropagation();
         }}
@@ -157,8 +157,8 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
         {success ? (
           <div className="max-h-[calc(90vh-90px)] overflow-y-auto px-6 py-12">
             <div className="flex flex-col items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-teal-50">
-              <CheckCircle size={32} className="text-teal-500" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-light">
+              <CheckCircle size={32} className="text-primary" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">
               Candidature envoyée !
@@ -191,7 +191,7 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                 value={form.nom}
                 onChange={handleChange}
                 required
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
@@ -206,7 +206,7 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
@@ -220,7 +220,7 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                 type="tel"
                 value={form.telephone}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
@@ -238,7 +238,7 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                 onChange={handleChange}
                 rows={3}
                 placeholder="Expliquez pourquoi vous êtes le candidat idéal…"
-                className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 transition-colors focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
@@ -253,8 +253,8 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                     className={
                       "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors " +
                       (cvOption === "profile"
-                        ? "border-teal-500 bg-teal-50"
-                        : "border-gray-200 bg-white hover:border-teal-300")
+                        ? "border-primary bg-primary-light"
+                        : "border-gray-200 bg-white hover:border-primary/40")
                     }
                   >
                     <input
@@ -268,10 +268,10 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                         setError("");
                         setSuccess(false);
                       }}
-                      className="mt-1 h-4 w-4 accent-teal-500"
+                      className="mt-1 h-4 w-4 accent-primary"
                     />
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50">
-                      <FileText size={20} className="text-teal-600" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light">
+                      <FileText size={20} className="text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-gray-800">
@@ -284,13 +284,13 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                         onClick={function (event) {
                           event.stopPropagation();
                         }}
-                        className="mt-0.5 inline-block text-xs font-medium text-teal-600 hover:underline"
+                        className="mt-0.5 inline-block text-xs font-medium text-primary hover:underline"
                       >
                         Voir mon CV actuel
                       </a>
                     </div>
                     {cvOption === "profile" && (
-                      <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-teal-600" />
+                      <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-primary" />
                     )}
                   </label>
 
@@ -298,8 +298,8 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                     className={
                       "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors " +
                       (cvOption === "upload"
-                        ? "border-teal-500 bg-teal-50"
-                        : "border-gray-200 bg-white hover:border-teal-300")
+                        ? "border-primary bg-primary-light"
+                        : "border-gray-200 bg-white hover:border-primary/40")
                     }
                   >
                     <input
@@ -312,10 +312,10 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                         setError("");
                         setSuccess(false);
                       }}
-                      className="mt-1 h-4 w-4 accent-teal-500"
+                      className="mt-1 h-4 w-4 accent-primary"
                     />
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50">
-                      <Upload size={20} className="text-teal-600" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light">
+                      <Upload size={20} className="text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-gray-800">
@@ -326,18 +326,18 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                       </p>
                     </div>
                     {cvOption === "upload" && (
-                      <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-teal-600" />
+                      <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-primary" />
                     )}
                   </label>
 
                   {cvOption === "upload" && (
                     <div className="space-y-2">
-                      <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-4 py-4 transition-colors hover:border-teal-400 hover:bg-teal-50/30">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50">
+                      <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-4 py-4 transition-colors hover:border-primary/40 hover:bg-primary-light">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light">
                           {cvFile ? (
-                            <FileText size={20} className="text-teal-600" />
+                            <FileText size={20} className="text-primary" />
                           ) : (
-                            <Upload size={20} className="text-teal-500" />
+                            <Upload size={20} className="text-primary" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -372,12 +372,12 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
                   )}
                 </div>
               ) : (
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-4 py-4 transition-colors hover:border-teal-400 hover:bg-teal-50/30">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50">
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-4 py-4 transition-colors hover:border-primary/40 hover:bg-primary-light">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light">
                     {cvFile ? (
-                      <FileText size={20} className="text-teal-600" />
+                      <FileText size={20} className="text-primary" />
                     ) : (
-                      <Upload size={20} className="text-teal-500" />
+                      <Upload size={20} className="text-primary" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -424,7 +424,7 @@ export default function PostulerModal({ offreId, offreTitre, onClose, onSuccess 
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-teal-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-teal-600 disabled:opacity-60"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-primary-dark disabled:opacity-60"
               >
                 {submitting ? (
                   <>

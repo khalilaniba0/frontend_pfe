@@ -7,7 +7,7 @@ import JobsTablePagination from "components/Offres/PaginationTableauOffres";
 
 const JOBS_PER_PAGE = 4;
 
-export default function JobsTable({ jobs, total, onToggleStatus, onDelete }) {
+export default function JobsTable({ jobs, total, onToggleStatus, onDelete, search, onSearchChange }) {
   const [page, setPage] = useState(1);
   const safeTotal = Number.isFinite(total) ? total : jobs.length;
   const totalPages = Math.max(1, Math.ceil(safeTotal / JOBS_PER_PAGE));
@@ -28,7 +28,7 @@ export default function JobsTable({ jobs, total, onToggleStatus, onDelete }) {
 
   return (
     <section className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
-      <JobsTableHeader total={total} />
+      <JobsTableHeader search={search} onSearchChange={onSearchChange} total={total} />
 
       <div className="overflow-x-auto">
         <table className="block w-full md:table md:border-collapse text-left">
@@ -96,4 +96,6 @@ JobsTable.propTypes = {
   total: PropTypes.number.isRequired,
   onToggleStatus: PropTypes.func,
   onDelete: PropTypes.func,
+  search: PropTypes.string.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
 };
