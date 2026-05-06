@@ -79,7 +79,7 @@ export default function ProfileForm() {
                   { key: "nom", placeholder: "Nom", type: "text" },
                   { key: "prenom", placeholder: "Prénom", type: "text" },
                   { key: "email", placeholder: "Email (exemple@email.com)", type: "email" },
-                  { key: "tel", placeholder: "Téléphone (+33 6 XX XX XX XX)", type: "tel" },
+                  { key: "tel", placeholder: "Téléphone (+216 20 000 000)", type: "tel" },
                 ].map(({ key, placeholder, type }) => (
                   <input
                     key={key}

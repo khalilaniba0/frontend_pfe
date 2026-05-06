@@ -149,12 +149,6 @@ export default function Login() {
         </Link>
       </form>
 
-      <div className="mt-6 flex items-center justify-center gap-1.5" style={{ color: "var(--color-ink-muted-48)" }}>
-        <span className="material-symbols-outlined text-[14px]">lock</span>
-        <p className="m-0 font-text text-[12px]" style={{ letterSpacing: "-0.12px" }}>
-          Authentification sécurisée chiffrée AES-256
-        </p>
-      </div>
     </AuthLayout>
   );
 }

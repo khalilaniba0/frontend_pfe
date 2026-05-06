@@ -6,6 +6,7 @@ import {
   reactiverEntreprise,
   deleteEntreprise,
 } from "service/restApiSuperAdmin";
+import { resolveEntrepriseMediaUrl } from "service/restApiEntreprise";
 import {
   Eye,
   Pause,
@@ -115,7 +116,7 @@ function DetailPanel({ visible, entrepriseId, onClose }) {
             <div className="space-y-5">
               <div className="flex items-center gap-3">
                 {ent.logo ? (
-                  <img src={ent.logo} alt={ent.nom} className="h-14 w-14 rounded-lg border border-border object-cover" />
+                  <img src={resolveEntrepriseMediaUrl(ent.logo)} alt={ent.nom} className="h-14 w-14 rounded-lg border border-border object-cover" />
                 ) : (
                   <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-md-primary/10 font-display text-xl font-bold text-md-primary">
                     {ent.nom?.[0]?.toUpperCase()}
@@ -293,7 +294,6 @@ export default function GestionEntreprises() {
                 <tr className="border-b border-border bg-bg-soft">
                   <th className="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-text-muted">Entreprise</th>
                   <th className="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-text-muted">Email</th>
-                  <th className="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-text-muted">Plan</th>
                   <th className="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-text-muted">Statut</th>
                   <th className="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-text-muted">Inscription</th>
                   <th className="px-4 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide text-text-muted">Actions</th>
@@ -302,7 +302,7 @@ export default function GestionEntreprises() {
               <tbody>
                 {filteredEntreprises.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-12 text-center font-body text-sm text-text-muted">
+                    <td colSpan={5} className="px-4 py-12 text-center font-body text-sm text-text-muted">
                       Aucune entreprise trouvée
                     </td>
                   </tr>
@@ -313,7 +313,7 @@ export default function GestionEntreprises() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
                             {ent.logo ? (
-                              <img src={ent.logo} alt="" className="h-8 w-8 rounded-lg border border-border object-cover" />
+                              <img src={resolveEntrepriseMediaUrl(ent.logo)} alt="" className="h-8 w-8 rounded-lg border border-border object-cover" />
                             ) : (
                               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-md-primary/10 font-display text-xs font-bold text-md-primary">
                                 {ent.nom?.[0]?.toUpperCase()}
@@ -323,9 +323,6 @@ export default function GestionEntreprises() {
                           </div>
                         </td>
                         <td className="px-4 py-3 font-body text-sm text-text-secondary">{ent.email}</td>
-                        <td className="px-4 py-3">
-                          <span className={"rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase " + (PLAN_BADGES[ent.plan] || "")}>{ent.plan}</span>
-                        </td>
                         <td className="px-4 py-3">
                           <span className={"rounded-full px-2.5 py-1 text-xs font-semibold " + (STATUT_BADGES[ent.statut] || "")}>{STATUT_LABELS[ent.statut] || ent.statut}</span>
                         </td>

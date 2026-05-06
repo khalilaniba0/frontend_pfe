@@ -206,8 +206,8 @@ export default function CreateJobModal({ onClose, onSuccess }) {
         typeContrat: form.typeContrat,
         modeContrat: form.modeContrat,
         modeTravail,
-        niveauExperience: form.niveauExperience,
-        niveauEducation: form.niveauEducation,
+        niveauExperience: form.niveauExperience === "Non spécifié" ? null : form.niveauExperience,
+        niveauEducation: form.niveauEducation === "Non spécifié" ? null : form.niveauEducation,
         langues: form.langues,
         langue: form.langues.join(", "),
       };

@@ -491,7 +491,19 @@ export default function JobDetail(props) {
           : modeContratRaw;
   var departement = offre?.departement || null;
   var niveauExperience = offre?.niveauExperience || offre?.experience || null;
+  var niveauEducation = offre?.niveauEducation || null;
   var dateLimite = formatDateFr(offre?.dateLimite);
+
+  var formatExperience = function(exp) {
+    var mapping = {
+      "0": "Débutant (0 an)",
+      "1": "Junior (1-2 ans)",
+      "3": "Confirmé (3-4 ans)",
+      "5": "Senior (5-7 ans)",
+      "8": "Expert (8+ ans)",
+    };
+    return mapping[String(exp)] || exp;
+  };
 
   var descriptionParagraphs = useMemo(
     function () {
@@ -520,7 +532,10 @@ export default function JobDetail(props) {
     function () {
       var items = [];
       if (niveauExperience) {
-        items.push({ label: "Niveau", value: String(niveauExperience) });
+        items.push({ label: "Expérience", value: String(formatExperience(niveauExperience)) });
+      }
+      if (niveauEducation && String(niveauEducation).trim() !== "Non spécifié") {
+        items.push({ label: "Niveau d'études", value: String(niveauEducation) });
       }
       if (departement) {
         items.push({ label: "Département", value: String(departement) });
@@ -533,7 +548,7 @@ export default function JobDetail(props) {
       }
       return items;
     },
-    [niveauExperience, departement, modeContrat, dateLimite]
+    [niveauExperience, niveauEducation, departement, modeContrat, dateLimite]
   );
 
   var logoEntreprise = resolveEntrepriseMediaUrl(

@@ -193,7 +193,7 @@ export default function AccepterInvitation() {
             name="tel"
             value={form.tel}
             onChange={handleChange}
-            placeholder="+33 6 00 00 00 00"
+            placeholder="+216 20 000 000"
             className="apple-input"
           />
         </div>
